@@ -5,7 +5,9 @@ First Person Shooter Development for Unreal Engine 4.
 
 1. Create a C++ UE4 'First Person' project template.  
     a. Name the project 'FPDev'
+    
     b. Be sure to select the C++ tab in the new project wizard!
+    
     c. Create the new project in Directory seperate from your Github Project directory for now.  Like a Unreal Projects Directory or something... 
 
 2. Clone This Git Project.
