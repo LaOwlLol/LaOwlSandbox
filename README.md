@@ -9,7 +9,7 @@ First Person Shooter Development for Unreal Engine 4.
     
     b. Be sure to select the C++ tab in the new project wizard!
     
-    c. Create the new project in a directory seperate from your Github projects directory for now.  Like an Unreal Projects directory or something... 
+    c. Create the new project in a directory seperate from your Github projects directory.  Like an Unreal Projects directory or something... 
 
 2. Clone This Git Project.
 
@@ -17,11 +17,11 @@ First Person Shooter Development for Unreal Engine 4.
 
   - Save this in a different location from the Unreal Projects directory. 
   
-  - This will matter latter they have the same name so Git Desktop will not let you clone in into your Unreal Projects folder. 
+  - This will matter later. for now, both have the same name so Git Desktop will not let you clone in into your Unreal Projects folder. 
   
 3. Copy the files in "Your Git Projects"/FPDev/Source/FPDev/ to "Your Unreal Projects"/FPDev/Source/FPDev/
 
-  a. Grab them all of them.
+  a. Copy all of them.
   
   b. Overwrite if needed. 
   
