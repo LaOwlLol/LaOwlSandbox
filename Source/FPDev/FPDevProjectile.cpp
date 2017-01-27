@@ -30,7 +30,7 @@ void AFPDevProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 10.0f, GetActorLocation());
+		OtherComp->AddImpulseAtLocation(GetVelocity() * 50.0f, GetActorLocation());
 
 		Destroy();
 	}
@@ -42,4 +42,8 @@ UProjectileMovementComponent*  AFPDevProjectile::InitProjectileMovementComponent
 	PMC->UpdatedComponent = CollisionComp;
 
 	return PMC;
+}
+
+float AFPDevProjectile::GetDamage_Implementation() const{
+	return 10.0;
 }

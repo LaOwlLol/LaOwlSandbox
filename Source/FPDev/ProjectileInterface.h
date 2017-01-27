@@ -21,8 +21,6 @@ class FPDEV_API IProjectileInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	
-	//Allows desginer to construct a UProjectileMovementComponent to govern this projectile's movement of a a custom projectile type.
-	//Return Value:: UProjectileMovementComponent
-	UFUNCTION(BlueprintImplementableEvent, Category = "Projectile Characteristics") UProjectileMovementComponent* InitProjectileMovementComponent();
-	
+	//Allows the designer to define how damage is calculated for the projectile.
+	UFUNCTION(BlueprintImplementableEvent, Category = "Projectile Characteristics") float GetDamage() const;
 };

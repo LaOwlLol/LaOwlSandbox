@@ -24,8 +24,16 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	//Allows desginer to construct a UProjectileMovementComponent to govern this projectile's movement of a a custom projectile type.
+	//Default Behavoir: construct a ProjectileMovementComponent and connect it to the Collision Component. 
+	//Default Return Value: 
 	UFUNCTION(BlueprintNativeEvent, Category = "Projectile Characteristics") UProjectileMovementComponent* InitProjectileMovementComponent();
 	virtual UProjectileMovementComponent* InitProjectileMovementComponent_Implementation();
+
+	//Allows the designer to define how damage is calculated for the projectile.
+	//Default Return Value: 10.0f
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Projectile Characteristics") float GetDamage() const;
+	virtual float GetDamage_Implementation() const;
 
 	/** Returns CollisionComp subobject **/
 	FORCEINLINE class USphereComponent* GetCollisionComp() const { return CollisionComp; }
