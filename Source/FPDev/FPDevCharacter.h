@@ -27,14 +27,6 @@ class AFPDevCharacter : public ACharacter, public IMortalInterface
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
-	/** Motion controller (right hand) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UMotionControllerComponent* R_MotionController;
-
-	/** Motion controller (left hand) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UMotionControllerComponent* L_MotionController;
-
 public:
 	AFPDevCharacter();
 
@@ -67,21 +59,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
 
-	/** Whether to use motion controller location for aiming. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	uint32 bUsingMotionControllers : 1;
-
 	//Remaining health (basic implentation)
 	UPROPERTY(BluePrintReadWrite) int32 Health;
 
+	//Check if health is remaining
+	//Default: false if health > 0.0 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
 		bool IsHealthDepleated() const;
 	virtual bool IsHealthDepleated_Implementation() const;
 
+	//Event called when IsHealthDepleated is true.
+	//Default: destroy this character.
+	//Recommended to always end by destroy this character.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
 		void HealthDepleated();
 	virtual void HealthDepleated_Implementation();
 
+	//Apply damage.
+	//Default: Health -= DamageAmount.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Damage")
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
