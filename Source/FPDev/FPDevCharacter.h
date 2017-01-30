@@ -2,11 +2,12 @@
 #pragma once
 #include "GameFramework/Character.h"
 #include "MortalInterface.h"
+#include "WeaponComponent.h"
 #include "FPDevCharacter.generated.h"
 
 class UInputComponent;
 
-UCLASS(config=Game)
+UCLASS(Blueprintable)
 class AFPDevCharacter : public ACharacter, public IMortalInterface
 {
 	GENERATED_BODY()
@@ -14,14 +15,6 @@ class AFPDevCharacter : public ACharacter, public IMortalInterface
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	class USkeletalMeshComponent* Mesh1P;
-
-	/** Gun mesh: 1st person view (seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FP_Gun;
-
-	/** Location on gun mesh where projectiles should spawn. */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USceneComponent* FP_MuzzleLocation;
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -35,6 +28,17 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds);
 
+	UFUNCTION(BlueprintCallable, Category= "Weapon") 
+	void AttachWeapon(UClass* CompClass);
+
+	/** Gun mesh: 1st person view (seen only by self) */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	class UWeaponComponent* FP_Gun = NULL;
+
+	/** Location on gun mesh where projectiles should spawn. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Mesh)
+	class USceneComponent* FP_MuzzleLocation;
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -42,22 +46,6 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
-
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
-
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AFPDevProjectile> ProjectileClass;
-
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	class USoundBase* FireSound;
-
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	class UAnimMontage* FireAnimation;
 
 	//Remaining health (basic implentation)
 	UPROPERTY(BluePrintReadWrite) int32 Health;
