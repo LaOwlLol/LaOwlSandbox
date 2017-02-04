@@ -104,14 +104,19 @@ I've also Overridden the HeathDepleatedEvent (part of MortalActors health system
 ##C++ Objects available to extend ATM:
 
 FPDevProjectile
+
 WeaponComponent
+
 MortalActor
+
 FPDevCharacter (kinda, there is already one extension "FirstPersonCharacter" from the template, you can modify this or make a new extension, but be sure to add it to the World and remove the old one. You may have input issues when testing by doing this).
 
 
 ##Example:  Apply damage with FPDevProjectile HitEvent.
 
-You will want to do this for any projectile class you create, so that they apply damage to MortalActor objects they collide with.  As we develope the game mechanics this will evolve to incoperate different damage types.  This basic method will work for now.
+You will want to do this for any projectile class you create, so that they apply damage to MortalActor objects they collide with.  
+
+As we develope the game mechanics this will evolve to incoperate different damage types.  This basic method will work for now.
 
 ###1. Add the HitEvent to EventGraph:
 
