@@ -7,9 +7,9 @@ First Person Shooter Development for Unreal Engine 4.
 
 ![create fpdev](https://cloud.githubusercontent.com/assets/1817852/22621947/1ee4f084-eaf5-11e6-9afe-c56f19a4bed4.png)
 
-- [ ] Select from C++ project templates "First Person"
-- [ ] Create the template in a Folder separate from Git project location.
-- [ ] Name the project "FPDev", otherwise C++ files with not compile.
+1. Select from C++ project templates "First Person"
+2. Create the template in a Folder separate from Git project location.
+3. Name the project "FPDev", otherwise C++ files with not compile.
 
 ###2. Clone the project from this site:
 
@@ -22,6 +22,20 @@ Verify the location where Git Desktop has clone the project. You will need this 
   a. Copy all of them.
   
   b. Overwrite in destination if needed. 
+
+###4. Refresh Visual Studio Project:
+
+![refresh](https://cloud.githubusercontent.com/assets/1817852/22622048/c87c8b4c-eaf6-11e6-95bc-c3086a01cc27.png)
+
+In the UE4 Editor select File->Refresh Visual Studio Project.
+
+###5. Close UE4 Editor and in Rebuild Solution:
+
+![rebuild](https://cloud.githubusercontent.com/assets/1817852/22622065/2c54e650-eaf7-11e6-93a7-fb7c7f7d12c4.png)
+
+1. With Visual Studio Open, Close the UE4 Editor. (You might need to select File->Open Visual Studio before closing UE4)
+2. In Visual Studio select Build->Rebuild Solution.  (this may take some time, have a stack or chill)
+3.  When it finishes ryou can reopen EU4 and in the C++ folder in content browser you should see all the classed added from Git project.   (if you still don't see them try refresh VS project, step 4, one more time)
   
 ## Usage. 
 
@@ -33,6 +47,8 @@ Verify the location where Git Desktop has clone the project. You will need this 
 
 ## Simple Update
 
-1.  Press "Sync" in Github Desktop then repeat step 3 above.
+![sync](https://cloud.githubusercontent.com/assets/1817852/22622009/125f5498-eaf6-11e6-8f93-b8f5561ccbeb.png)
 
-  - If all else fails delete Unreal Project directory and repeat simple Setup 1 and 3. (skip 2 you got the git right?) 
+1.  Press "Sync" in Github Desktop then repeat step 3 to 5 in setup.
+
+  - If all else fails delete Unreal Project directory and repeat simple Setup 1 and 3 - 5. (skip 2 you got the git right?) 
