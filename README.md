@@ -1,31 +1,29 @@
 # FPDev
 First Person Shooter Development for Unreal Engine 4.
 
-# Simple Setup
+##Simple Setup
 
-1. Create a C++ UE4 'First Person' project template.  
+###1. Create an Unreal Engine 4 Project:
 
-    a. Name the project 'FPDev'
-    
-    b. Be sure to select the C++ tab in the new project wizard!
-    
-    c. Create the new project in a directory seperate from your Github projects directory.  Like an Unreal Projects directory or something... 
+![create fpdev](https://cloud.githubusercontent.com/assets/1817852/22621947/1ee4f084-eaf5-11e6-9afe-c56f19a4bed4.png)
 
-2. Clone This Git Project.
+- [ ] Select from C++ project templates "First Person"
+- [ ] Create the template in a Folder separate from Git project location.
+- [ ] Name the project "FPDev", otherwise C++ files with not compile.
 
-  - use the Git Desktop app.
+###2. Clone the project from this site:
 
-  - Save this in a different location from the Unreal Projects directory. 
-  
-  - This will matter later. for now, both have the same name so Git Desktop will not let you clone in into your Unreal Projects folder. 
-  
-3. Copy the files in "Your Git Projects"/FPDev/Source/FPDev/ to "Your Unreal Projects"/FPDev/Source/FPDev/
+![clone using desktop](https://cloud.githubusercontent.com/assets/1817852/22621948/2b5b6d52-eaf5-11e6-9262-0761dbbdccd0.png)
+
+Verify the location where Git Desktop has clone the project. You will need this folder for the next step.
+
+###3. Copy the files in "Your Git Projects"/FPDev/Source/FPDev/ to "Your Unreal Projects"/FPDev/Source/FPDev/
 
   a. Copy all of them.
   
-  b. Overwrite if needed. 
+  b. Overwrite in destination if needed. 
   
-# Usage. 
+## Usage. 
 
 1.  Do anything you want in the Unreal Project.
 
@@ -33,7 +31,7 @@ First Person Shooter Development for Unreal Engine 4.
 
 3.  Simple update only below.
 
-# Simple Update
+## Simple Update
 
 1.  Press "Sync" in Github Desktop then repeat step 3 above.
 
