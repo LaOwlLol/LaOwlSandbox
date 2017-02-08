@@ -23,4 +23,5 @@ public:
 	
 	//Allows the designer to define how damage is calculated for the projectile.
 	UFUNCTION(BlueprintImplementableEvent, Category = "Projectile Characteristics") float GetDamage() const;
+
 };

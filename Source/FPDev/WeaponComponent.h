@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Components/SkeletalMeshComponent.h"
+#include "WeaponMechanic.h"
 #include "WeaponComponent.generated.h"
 
 /**
@@ -16,14 +17,10 @@ class FPDEV_API UWeaponComponent : public USkeletalMeshComponent
 public:
 
 	UWeaponComponent();
-
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class AFPDevProjectile> ProjectileClass;
 	
 	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
-	FVector GunOffset;
+	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
+	FVector GunOffset;*/
 	
 	/** Sound to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
@@ -32,4 +29,5 @@ public:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
 	class UAnimMontage* FireAnimation;
+
 };

@@ -12,3 +12,4 @@ UProjectileInterface::UProjectileInterface(const class FObjectInitializer& Objec
 }
 
 // Add default functionality here for any IProjectileInterface functions that are not pure virtual.
+

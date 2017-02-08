@@ -3,6 +3,7 @@
 #include "GameFramework/Character.h"
 #include "MortalInterface.h"
 #include "WeaponComponent.h"
+#include "WeaponMechanic.h"
 #include "FPDevCharacter.generated.h"
 
 class UInputComponent;
@@ -20,6 +21,10 @@ class AFPDevCharacter : public ACharacter, public IMortalInterface
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
 
+	TArray<bool> FireQueue;
+	float TimeSinceBulletSpawn;
+	
+
 public:
 	AFPDevCharacter();
 
@@ -28,8 +33,22 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaSeconds);
 
+	/** Projectile class to spawn */
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Projectile")
+		TSubclassOf<class AFPDevProjectile> ProjectileClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon")
+		UWeaponMechanic* WeaponFunction;
+
 	UFUNCTION(BlueprintCallable, Category= "Weapon") 
-	void AttachWeapon(UClass* CompClass);
+		bool AttachWeapon(UClass* CompClass);
+
+	//UFUNCTION(BlueprintCallable, Category = "Weapon")
+	//	bool DetachWeapon();
+
+	//Time since the last gun fire.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = " Weapon ")
+		float TimeSinceFire;
 
 	/** Gun mesh: 1st person view (seen only by self) */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

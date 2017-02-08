@@ -51,8 +51,8 @@ AFPDevCharacter::AFPDevCharacter()
 
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, and FP_Gun
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
-
-	Health = 100.0;
+	
+	Health = 100.0f;
 }
 
 void AFPDevCharacter::BeginPlay()
@@ -62,6 +62,12 @@ void AFPDevCharacter::BeginPlay()
 
 	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
 	//FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+	WeaponFunction = NewObject<UWeaponMechanic>();
+	
+	TimeSinceFire = 0.0f;
+
+	FireQueue.Init(true, 0);
+	TimeSinceBulletSpawn = 0.0f;
 
 	
 	Mesh1P->SetHiddenInGame(false, true);
@@ -102,42 +108,28 @@ void AFPDevCharacter::OnFire()
 	// try and fire a projectile
 	if (FP_Gun != NULL)
 	{
-		if (FP_Gun->ProjectileClass != NULL) {
-			UWorld* const World = GetWorld();
-			if (World != NULL)
+		if (!(TimeSinceFire < WeaponFunction->FireDelay)) {
+			for (int32 i = 0; i < WeaponFunction->ShotMultiplier; ++i) {
+				FireQueue.Add(true);
+			}
+			// try and play the sound if specified
+			if (FP_Gun->FireSound != NULL)
 			{
+				UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->FireSound, GetActorLocation());
+			}
 
-				const FRotator SpawnRotation = GetControlRotation();
-				// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-				const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FP_Gun->GunOffset);
-				//const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(FP_Gun->GunOffset);
-				//Set Spawn Collision Handling Override
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-				// spawn the projectile at the muzzle
-				World->SpawnActor<AFPDevProjectile>(FP_Gun->ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-
+			// try and play a firing animation if specified
+			if (FP_Gun->FireAnimation != NULL)
+			{
+				// Get the animation object for the arms mesh
+				UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+				if (AnimInstance != NULL)
+				{
+					AnimInstance->Montage_Play(FP_Gun->FireAnimation, 1.f);
+				}
 			}
 		}
 	
-		// try and play the sound if specified
-		if (FP_Gun->FireSound != NULL)
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->FireSound, GetActorLocation());
-		}
-
-		// try and play a firing animation if specified
-		if (FP_Gun->FireAnimation != NULL)
-		{
-			// Get the animation object for the arms mesh
-			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-			if (AnimInstance != NULL)
-			{
-				AnimInstance->Montage_Play(FP_Gun->FireAnimation, 1.f);
-			}
-		}
-
 	}
 
 	
@@ -262,15 +254,47 @@ void AFPDevCharacter::Tick(float DeltaTime)
 	if (IsHealthDepleated()) {
 		HealthDepleated();
 	}
+
+	if (FireQueue.Num() > 0 && !(TimeSinceBulletSpawn < WeaponFunction->MultiplierDelay) ) {
+		const FRotator SpawnRotation = GetControlRotation();
+
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FVector(100.0f, 0.0f, 5.0f));
+		//const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(FP_Gun->GunOffset);
+		
+		if (ProjectileClass != NULL) {
+
+			UWorld* const World = GetWorld();
+
+			if (World != NULL)
+			{
+				//Set Spawn Collision Handling Override
+				FActorSpawnParameters ActorSpawnParams;
+				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+				// spawn the projectile at the muzzle
+				World->SpawnActor<AFPDevProjectile>(ProjectileClass,
+					SpawnLocation,
+					SpawnRotation, ActorSpawnParams);
+
+				FireQueue.RemoveAt(0);
+				TimeSinceBulletSpawn = 0.0f;
+			}
+		}
+	}
+	else {
+		TimeSinceBulletSpawn += DeltaTime;
+		TimeSinceFire += DeltaTime;
+	}
 }
 
-void AFPDevCharacter::AttachWeapon(UClass* CompClass)
+bool AFPDevCharacter::AttachWeapon(UClass* CompClass)
 {
 	//CompClass can be a BP
 	FP_Gun = NewObject<UWeaponComponent>(this, CompClass);
 	if (!FP_Gun)
 	{
-		return;
+		return false;
 	}
 
 	FP_Gun->RegisterComponent();			//You must ConstructObject with a valid Outer that has world, see above	 
@@ -284,6 +308,8 @@ void AFPDevCharacter::AttachWeapon(UClass* CompClass)
 	FP_MuzzleLocation->RegisterComponent();
 	FP_MuzzleLocation->AttachTo(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+
+	return true;
 }
 
 bool AFPDevCharacter::IsHealthDepleated_Implementation() const {
