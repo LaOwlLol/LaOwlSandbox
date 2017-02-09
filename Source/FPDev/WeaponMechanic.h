@@ -64,7 +64,13 @@ public:
 		bool ChangePattern(const TArray<bool>& NewPattern, int32 Width);
 	
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
-		void ModifyShotMultiplier(int32 Multiplier) { ShotMultiplier = Multiplier; }
+		void ModifyShotMultiplier(int32 Multiplier);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		void ModifyFireDelay(float Delay) { FireDelay = Delay; }
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		void ModifyMultiplierDelay(float Delay) { MultiplierDelay = Delay; }
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void UpgradeShotMultiplier(int32 Bonus);
