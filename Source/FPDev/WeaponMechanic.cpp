@@ -40,13 +40,26 @@ bool UWeaponMechanic::ChangePattern(const TArray<bool>& NewPattern, int32 Width)
 }
 
 void UWeaponMechanic::ModifyShotMultiplier(int32 Multiplier) {
-	ShotMultiplier += Multiplier;
+	ShotMultiplier = Multiplier;
 
 	if (ShotMultiplier < 1) {
 		ShotMultiplier = 1;
 	}
 }
 
-void UWeaponMechanic::UpgradeShotMultiplier(int32 Bonus) { ModifyShotMultiplier(Bonus); }
 
-void UWeaponMechanic::DowngradeShotMultiplier(int32 Penalty) { ModifyShotMultiplier(-Penalty); }
+void UWeaponMechanic::ModifyFireDelay(float Delay) { 
+	FireDelay = Delay; 
+	
+	if (FireDelay < 0.0) {
+		FireDelay = 0.0;
+	}
+}
+
+void UWeaponMechanic::ModifyShotMultiplierDelay(float Delay) { 
+	MultiplierDelay = Delay; 
+	
+	if (MultiplierDelay < 0.0) {
+		MultiplierDelay = 0.0;
+	}
+}

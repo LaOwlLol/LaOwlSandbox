@@ -63,19 +63,47 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		bool ChangePattern(const TArray<bool>& NewPattern, int32 Width);
 	
+
+	//Set the ShotMuliplier.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void ModifyShotMultiplier(int32 Multiplier);
 
+	//Increase the shot multiplier by a Bonus amount/
+	//@Param Bonus: Amount to be added to current ShotMultiplier.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
-		void ModifyFireDelay(float Delay) { FireDelay = Delay; }
+		void UpgradeShotMultiplier(int32 Bonus) { ModifyShotMultiplier(ShotMultiplier + Bonus); }
 
+	//Decrease the shot shot multiplier by a Penalty amount
+	//@Param: Penality: a postivie amount this method will subtract from the current ShotMultiplier.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
-		void ModifyMultiplierDelay(float Delay) { MultiplierDelay = Delay; }
+		void DowngradeShotMultiplier(int32 Penalty) { ModifyShotMultiplier(ShotMultiplier - Penalty); }
 
+	//Set the FireDelay.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
-		void UpgradeShotMultiplier(int32 Bonus);
+		void ModifyFireDelay(float Delay);
 
+	//Increase the FireDelay by a Delta amount.
+	//@Param Delta: Amount to be added to current FireDelay.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
-		void DowngradeShotMultiplier(int32 Penalty);
+		void IncreaseFireDelay(float Delta) { ModifyFireDelay(FireDelay + Delta); }
+
+	//Decrease the FireDelay by a Delta amount.
+	//@Param Delta: Amount to be subtracted to current FireDelay.
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		void DecreaseFireDelay(float Delta) { ModifyFireDelay(FireDelay - Delta); }
+
+	//Set the MuiltiplierDelay.  
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		void ModifyShotMultiplierDelay(float Delay);
+
+	//Increase the MultiplierDelay by a Delta amount.
+	//@Param Delta: Amount to be added to current MultiplierDelay.
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		void IncreaseShotMultiplierDelay(float Delta) { ModifyShotMultiplierDelay(MultiplierDelay + Delta); }
+
+	//Decrease the MultiplierDelay by a Delta amount.
+	//@Param Delta: Amount to be subtracted from current MultiplierDelay.
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		void DecreaseShotMultiplierDelay(float Delta) { ModifyShotMultiplierDelay(MultiplierDelay - Delta); }
 
 };

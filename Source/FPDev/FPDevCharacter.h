@@ -22,7 +22,6 @@ class AFPDevCharacter : public ACharacter, public IMortalInterface
 	class UCameraComponent* FirstPersonCameraComponent;
 
 	TArray<bool> FireQueue;
-	float TimeSinceBulletSpawn;
 	
 
 public:
@@ -37,7 +36,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Projectile")
 		TSubclassOf<class AFPDevProjectile> ProjectileClass;
 
-	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon")
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Mechanic")
 		UWeaponMechanic* WeaponFunction;
 
 	UFUNCTION(BlueprintCallable, Category= "Weapon") 
@@ -46,9 +45,13 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "Weapon")
 	//	bool DetachWeapon();
 
-	//Time since the last gun fire.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = " Weapon ")
+	//Time since the last trigger pulled.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Mechanic")
 		float TimeSinceFire;
+
+	//Time since the last round fired.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Mechanic")
+	float TimeSinceBulletSpawn;
 
 	/** Gun mesh: 1st person view (seen only by self) */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

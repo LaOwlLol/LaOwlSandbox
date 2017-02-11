@@ -112,22 +112,7 @@ void AFPDevCharacter::OnFire()
 			for (int32 i = 0; i < WeaponFunction->ShotMultiplier; ++i) {
 				FireQueue.Add(true);
 			}
-			// try and play the sound if specified
-			if (FP_Gun->FireSound != NULL)
-			{
-				UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->FireSound, GetActorLocation());
-			}
-
-			// try and play a firing animation if specified
-			if (FP_Gun->FireAnimation != NULL)
-			{
-				// Get the animation object for the arms mesh
-				UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-				if (AnimInstance != NULL)
-				{
-					AnimInstance->Montage_Play(FP_Gun->FireAnimation, 1.f);
-				}
-			}
+			
 		}
 	
 	}
@@ -268,6 +253,25 @@ void AFPDevCharacter::Tick(float DeltaTime)
 
 			if (World != NULL)
 			{
+
+				if (FP_Gun != NULL) {
+					// try and play the sound if specified
+					if (FP_Gun->FireSound != NULL)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->FireSound, GetActorLocation());
+					}
+
+					// try and play a firing animation if specified
+					if (FP_Gun->FireAnimation != NULL)
+					{
+						// Get the animation object for the arms mesh
+						UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+						if (AnimInstance != NULL)
+						{
+							AnimInstance->Montage_Play(FP_Gun->FireAnimation, 1.f);
+						}
+					}
+				}
 				//Set Spawn Collision Handling Override
 				FActorSpawnParameters ActorSpawnParams;
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
