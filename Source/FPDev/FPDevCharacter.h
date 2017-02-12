@@ -1,6 +1,7 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "MortalInterface.h"
 #include "WeaponComponent.h"
 #include "WeaponMechanic.h"
@@ -70,26 +71,26 @@ public:
 	float BaseLookUpRate;
 
 	//Remaining health (basic implentation)
-	UPROPERTY(BluePrintReadWrite) int32 Health;
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Health System") int32 Health;
 
 	//Check if health is remaining
 	//Default: false if health > 0.0 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
 		bool IsHealthDepleated() const;
-	virtual bool IsHealthDepleated_Implementation() const;
+	virtual bool IsHealthDepleated_Implementation() const override;
 
 	//Event called when IsHealthDepleated is true.
 	//Default: destroy this character.
 	//Recommended to always end by destroy this character.
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
 		void HealthDepleated();
-	virtual void HealthDepleated_Implementation();
+	virtual void HealthDepleated_Implementation() override;
 
 	//Apply damage.
 	//Default: Health -= DamageAmount.
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Damage")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Damage")
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
-	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 
 protected:
 	

@@ -277,9 +277,34 @@ void AFPDevCharacter::Tick(float DeltaTime)
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 				// spawn the projectile at the muzzle
-				World->SpawnActor<AFPDevProjectile>(ProjectileClass,
-					SpawnLocation,
-					SpawnRotation, ActorSpawnParams);
+
+				int32 i = 0;
+				for (auto& cell : WeaponFunction->SpreadPattern) {
+					if (cell) {
+						float x = i%WeaponFunction->SpreadWidth - (float(WeaponFunction->SpreadWidth) / 2.0f);
+						float y = (i / WeaponFunction->SpreadWidth /*- (WeaponFunction->GetSpreadHeight() / 2.0f)*/);
+						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+						p -= WeaponFunction->SpreadDepth * UKismetMathLibrary::GetForwardVector(SpawnRotation);
+						p += y * WeaponFunction->GetSpreadCellHeight() * UKismetMathLibrary::GetUpVector(SpawnRotation);
+						p += x * WeaponFunction->GetSpreadCellWidth() * UKismetMathLibrary::GetRightVector(SpawnRotation);
+
+						FVector s = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+						s += y * 15 * UKismetMathLibrary::GetUpVector(SpawnRotation);
+						s += x * 15 * UKismetMathLibrary::GetRightVector(SpawnRotation);
+
+						p = SpawnLocation - p;
+
+						p.Normalize();
+
+						World->SpawnActor<AFPDevProjectile>(ProjectileClass,
+							s,
+							p.ToOrientationRotator(), ActorSpawnParams);
+					}
+
+					++i;
+				}
+
+				
 
 				FireQueue.RemoveAt(0);
 				TimeSinceBulletSpawn = 0.0f;

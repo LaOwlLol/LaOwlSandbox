@@ -5,7 +5,7 @@
 #include "MortalInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(Blueprintable)
+UINTERFACE(BlueprintType)
 class UMortalInterface : public UInterface
 {
 	GENERATED_UINTERFACE_BODY()
@@ -22,14 +22,14 @@ class FPDEV_API IMortalInterface
 public:
 	
 	//check if health is depleated.  Override to define when death occurs.
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Health System")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
 		bool IsHealthDepleated() const;
 
 	//Event HealthDepleated.  Override with functionality or effects of death.
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Health System")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
 		void HealthDepleated();
 
 	//Called by Appl<type>Damage.  Override to define effect of Damage to this actor type. 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Damage")
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 };

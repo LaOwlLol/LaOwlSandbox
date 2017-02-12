@@ -22,17 +22,17 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	//Remaining health (basic implentation)
-	UPROPERTY(BluePrintReadWrite) int32 Health;
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category= "Health System") int32 Health;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
 		bool IsHealthDepleated() const;
-	virtual bool IsHealthDepleated_Implementation() const;
+	virtual bool IsHealthDepleated_Implementation() const override;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health System")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
 		void HealthDepleated();
-	virtual void HealthDepleated_Implementation();
+	virtual void HealthDepleated_Implementation() override;
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Damage")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Damage")
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
-	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
+	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 };

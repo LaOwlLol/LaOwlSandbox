@@ -4,19 +4,21 @@
 #include "WeaponMechanic.h"
 
 
-UWeaponMechanic::UWeaponMechanic() : ShotMultiplier(1), MultiplierDelay(0.05), FireDelay(0.2), SpreadWidth(1) {
+UWeaponMechanic::UWeaponMechanic() : ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(200.0f), SpreadArea(4.0f) {
 
-	SpreadPattern.Init(true, SpreadWidth);
-
-}
-
-UWeaponMechanic::UWeaponMechanic(int32 Multiplier) : ShotMultiplier(Multiplier), MultiplierDelay(0.05), FireDelay(0.2), SpreadWidth(1) {
-
-	SpreadPattern.Init(true, SpreadWidth);
+	SpreadPattern.Init(false, SpreadWidth);
+	SpreadPattern[1] = true;
 
 }
 
-UWeaponMechanic::UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, int32 Width) : ShotMultiplier(Multiplier), MultiplierDelay(0.05), FireDelay(0.2), SpreadWidth(Width) {
+UWeaponMechanic::UWeaponMechanic(int32 Multiplier) : ShotMultiplier(Multiplier), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(200.0f), SpreadArea(4.0f) {
+
+	SpreadPattern.Init(false, SpreadWidth);
+	SpreadPattern[1] = true;
+
+}
+
+UWeaponMechanic::UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, int32 Width) : ShotMultiplier(Multiplier), MultiplierDelay(0.05), FireDelay(0.2), SpreadWidth(Width), SpreadDepth(200.0f), SpreadArea(4.0f) {
 
 	SpreadPattern = Pattern;
 
@@ -51,15 +53,31 @@ void UWeaponMechanic::ModifyShotMultiplier(int32 Multiplier) {
 void UWeaponMechanic::ModifyFireDelay(float Delay) { 
 	FireDelay = Delay; 
 	
-	if (FireDelay < 0.0) {
-		FireDelay = 0.0;
+	if (FireDelay < 0.0f) {
+		FireDelay = 0.0f;
 	}
 }
 
 void UWeaponMechanic::ModifyShotMultiplierDelay(float Delay) { 
 	MultiplierDelay = Delay; 
 	
-	if (MultiplierDelay < 0.0) {
-		MultiplierDelay = 0.0;
+	if (MultiplierDelay < 0.0f) {
+		MultiplierDelay = 0.0f;
+	}
+}
+
+void UWeaponMechanic::ModifySpreadDepth(float Depth) {
+	SpreadDepth = Depth;
+
+	if (SpreadDepth < 0.0f) {
+		SpreadDepth = 0.0f;
+	}
+}
+
+void UWeaponMechanic::ModifySpreadArea(float Area) {
+	SpreadArea = Area;
+
+	if (SpreadArea < 0.0f) {
+		SpreadArea = 0.0f;
 	}
 }
