@@ -3,14 +3,14 @@
 #pragma once
 
 #include "Components/SkeletalMeshComponent.h"
-#include "WeaponMechanic.h"
+#include "WeaponInterface.h"
 #include "WeaponComponent.generated.h"
 
 /**
  * 
  */
 UCLASS(Blueprintable, BlueprintType, meta = (BlueprintSpawnableComponent))
-class FPDEV_API UWeaponComponent : public USkeletalMeshComponent
+class FPDEV_API UWeaponComponent : public USkeletalMeshComponent, public IWeaponInterface
 {
 	GENERATED_BODY()
 	
@@ -18,16 +18,30 @@ public:
 
 	UWeaponComponent();
 	
-	/** Gun muzzle's offset from the characters location */
-	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
-	FVector GunOffset;*/
-	
 	/** Sound to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
-	class USoundBase* FireSound;
+		class USoundBase* ActivationSound;
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Gameplay)
+		bool HasActivationSound() const;
+	virtual bool HasActivationSound_Implementation() const { return ActivationSound != NULL; }
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Gameplay)
+		class USoundBase* GetActivationSound() const;
+	virtual class USoundBase* GetActivationSound_Implementation() const;
 
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
-	class UAnimMontage* FireAnimation;
+	class UAnimMontage* ActivationAnimation;
+
+	//Check if the weapon has an animation to play on activation. 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Gameplay)
+		bool HasActivationAnimation() const;
+	virtual bool HasActivationAnimation_Implementation() const { return ActivationAnimation != NULL; }
+
+	//Return the ActivationAnitmation.
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Gameplay)
+		class UAnimMontage* GetActivationAnimation() const;
+	virtual class UAnimMontage* GetActivationAnimation_Implementation() const;
 
 };

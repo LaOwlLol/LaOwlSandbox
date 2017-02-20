@@ -7,3 +7,11 @@
 UWeaponComponent::UWeaponComponent() : Super() {
 	
 }
+
+class USoundBase* UWeaponComponent::GetActivationSound_Implementation() const {
+	return ActivationSound;
+}
+
+class UAnimMontage* UWeaponComponent::GetActivationAnimation_Implementation() const {
+	return ActivationAnimation;
+}

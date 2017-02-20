@@ -256,19 +256,19 @@ void AFPDevCharacter::Tick(float DeltaTime)
 
 				if (FP_Gun != NULL) {
 					// try and play the sound if specified
-					if (FP_Gun->FireSound != NULL)
+					if (FP_Gun->HasActivationSound())
 					{
-						UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->FireSound, GetActorLocation());
+						UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->GetActivationSound(), GetActorLocation());
 					}
 
 					// try and play a firing animation if specified
-					if (FP_Gun->FireAnimation != NULL)
+					if (FP_Gun->HasActivationAnimation())
 					{
 						// Get the animation object for the arms mesh
 						UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
 						if (AnimInstance != NULL)
 						{
-							AnimInstance->Montage_Play(FP_Gun->FireAnimation, 1.f);
+							AnimInstance->Montage_Play(FP_Gun->GetActivationAnimation(), 1.f);
 						}
 					}
 				}
@@ -279,18 +279,19 @@ void AFPDevCharacter::Tick(float DeltaTime)
 				// spawn the projectile at the muzzle
 
 				int32 i = 0;
+				float cellH = WeaponFunction->GetSpreadCellHeight();
+				float cellW = WeaponFunction->GetSpreadCellWidth();
+				FVector Forward = UKismetMathLibrary::GetForwardVector(SpawnRotation);
+				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
+				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
 				for (auto& cell : WeaponFunction->SpreadPattern) {
 					if (cell) {
 						float x = i%WeaponFunction->SpreadWidth - (float(WeaponFunction->SpreadWidth) / 2.0f);
 						float y = (i / WeaponFunction->SpreadWidth - (WeaponFunction->GetSpreadHeight() / 2.0f));
 						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
-						p -= WeaponFunction->SpreadDepth * UKismetMathLibrary::GetForwardVector(SpawnRotation);
-						p += y * WeaponFunction->GetSpreadCellHeight() * UKismetMathLibrary::GetUpVector(SpawnRotation);
-						p += x * WeaponFunction->GetSpreadCellWidth() * UKismetMathLibrary::GetRightVector(SpawnRotation);
-
-						/*FVector s = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
-						s += y * 15 * UKismetMathLibrary::GetUpVector(SpawnRotation);
-						s += x * 15 * UKismetMathLibrary::GetRightVector(SpawnRotation);*/
+						p -= WeaponFunction->SpreadDepth * Forward;
+						p += ((y * cellH) + (0.5f * cellH) ) * Up;
+						p += ((x * cellW) + (0.5f * cellW) ) * Right;
 
 						p = SpawnLocation - p;
 
