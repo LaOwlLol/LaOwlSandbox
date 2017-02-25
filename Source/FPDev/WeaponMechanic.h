@@ -8,7 +8,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS(Blueprintable, BlueprintType, meta = (BlueprintSpawnableComponent))
 class FPDEV_API UWeaponMechanic : public UObject
 {
 	GENERATED_BODY()
@@ -26,20 +26,20 @@ public:
 	UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, int32 Width);
 
 	//The number of shot to fire on a single trigger pull.
-	UPROPERTY(BlueprintReadWrite, VisibleAnyWhere, Category = "Weapon Functionality")
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		int32 ShotMultiplier;
 
 	//The Delay between projectiles spawned in a single pull of the trigger.
-	UPROPERTY(BlueprintReadWrite, VisibleAnyWhere, Category = "Weapon Functionality")
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		float MultiplierDelay;
 	
 	//The Delay between trigger pulls. 
-	UPROPERTY(BlueprintReadWrite, VisibleAnyWhere, Category = "Weapon Functionality")
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		float FireDelay;
 
 	//Width of the 2D spread pattern.
 	//Must be <= SpreadPattern.Num()
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Functionality")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon Functionality")
 		int32 SpreadWidth;
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon Functionality")
@@ -52,7 +52,7 @@ public:
 		float GetSpreadCellHeight() { return sqrt(SpreadArea) / GetSpreadHeight(); }
 
 	//Pattern of the projectiles fired per shot.
-	UPROPERTY(BlueprintReadWrite, Category = "Weapon Functionality")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon Functionality")
 		TArray<bool> SpreadPattern;
 
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")

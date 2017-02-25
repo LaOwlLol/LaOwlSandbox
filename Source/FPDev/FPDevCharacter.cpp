@@ -318,10 +318,10 @@ void AFPDevCharacter::Tick(float DeltaTime)
 	}
 }
 
-bool AFPDevCharacter::AttachWeapon(UClass* CompClass)
+bool AFPDevCharacter::AttachWeapon(UClass* ComponentClass)
 {
 	//CompClass can be a BP
-	FP_Gun = NewObject<UWeaponComponent>(this, CompClass);
+	FP_Gun = NewObject<UWeaponComponent>(this, ComponentClass);
 	if (!FP_Gun)
 	{
 		return false;
@@ -340,6 +340,14 @@ bool AFPDevCharacter::AttachWeapon(UClass* CompClass)
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	return true;
+}
+
+void AFPDevCharacter::SetWeaponFunction(UWeaponMechanic* NewWeaponFunction) {
+	WeaponFunction = NewWeaponFunction;
+}
+
+void AFPDevCharacter::ChangeWeaponMechanicClass(UClass* NewMechanicType) {
+	WeaponFunction = NewObject<UWeaponMechanic>(this, NewMechanicType);
 }
 
 bool AFPDevCharacter::IsHealthDepleated_Implementation() const {

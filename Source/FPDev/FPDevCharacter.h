@@ -37,26 +37,33 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Projectile")
 		TSubclassOf<class AFPDevProjectile> ProjectileClass;
 
-	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Mechanic")
-		UWeaponMechanic* WeaponFunction;
+	/** Gun mesh: 1st person view (seen only by self) */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	class UWeaponComponent* FP_Gun = NULL;
 
-	UFUNCTION(BlueprintCallable, Category= "Weapon") 
-		bool AttachWeapon(UClass* CompClass);
+	//Attach a weaponComponent of CompClass to 
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		bool AttachWeapon(UClass* ComponentClass);
 
 	//UFUNCTION(BlueprintCallable, Category = "Weapon")
 	//	bool DetachWeapon();
 
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon Mechanic")
+		class UWeaponMechanic* WeaponFunction;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Mechanic")
+		void ChangeWeaponMechanicClass(UClass* NewMechanicType);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Mechanic")
+		void SetWeaponFunction(UWeaponMechanic* NewWeaponFunction);
+
 	//Time since the last trigger pulled.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Mechanic")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Weapon Mechanic")
 		float TimeSinceFire;
 
 	//Time since the last round fired.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Mechanic")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Weapon Mechanic")
 	float TimeSinceBulletSpawn;
-
-	/** Gun mesh: 1st person view (seen only by self) */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-	class UWeaponComponent* FP_Gun = NULL;
 
 	/** Location on gun mesh where projectiles should spawn. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Mesh)
