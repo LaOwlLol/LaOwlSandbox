@@ -84,12 +84,8 @@ void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPDevCharacter::OnFire);
 
-	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPDevCharacter::TouchStarted);
-	if (EnableTouchscreenMovement(PlayerInputComponent) == false)
-	{
-		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPDevCharacter::OnFire);
-	}
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPDevCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFPDevCharacter::MoveRight);
@@ -123,31 +119,6 @@ void AFPDevCharacter::OnFire()
 void AFPDevCharacter::OnResetVR()
 {
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-void AFPDevCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == true)
-	{
-		return;
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void AFPDevCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = false;
 }
 
 //Commenting this section out to be consistent with FPS BP template.
@@ -218,21 +189,6 @@ void AFPDevCharacter::LookUpAtRate(float Rate)
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
-bool AFPDevCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)
-{
-	bool bResult = false;
-	if (FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch)
-	{
-		bResult = true;
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFPDevCharacter::BeginTouch);
-		PlayerInputComponent->BindTouch(EInputEvent::IE_Released, this, &AFPDevCharacter::EndTouch);
-
-		//Commenting this out to be more consistent with FPS BP template.
-		//PlayerInputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AFPDevCharacter::TouchUpdate);
-	}
-	return bResult;
-}
-
 void AFPDevCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -244,7 +200,7 @@ void AFPDevCharacter::Tick(float DeltaTime)
 		const FRotator SpawnRotation = GetControlRotation();
 
 		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FVector(100.0f, 0.0f, 5.0f));
+		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FVector(100.0f, 0.0f, 0.0f));
 		//const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(FP_Gun->GunOffset);
 		
 		if (ProjectileClass != NULL) {
@@ -287,13 +243,13 @@ void AFPDevCharacter::Tick(float DeltaTime)
 				for (auto& cell : WeaponFunction->SpreadPattern) {
 					if (cell) {
 						float x = i%WeaponFunction->SpreadWidth - (float(WeaponFunction->SpreadWidth) / 2.0f);
-						float y = (i / WeaponFunction->SpreadWidth - (WeaponFunction->GetSpreadHeight() / 2.0f));
+						float y = (i / WeaponFunction->SpreadWidth - (float(WeaponFunction->GetSpreadHeight()) / 2.0f));
 						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
-						p -= WeaponFunction->SpreadDepth * Forward;
-						p += ((y * cellH) + (0.5f * cellH) ) * Up;
-						p += ((x * cellW) + (0.5f * cellW) ) * Right;
+						p += WeaponFunction->SpreadDepth * Forward;
+						p += ((y * cellH) + (0.5f * cellH)) * Up;
+						p += ((x * cellW) + (0.5f * cellW)) * Right;
 
-						p = SpawnLocation - p;
+						p = p - SpawnLocation;
 
 						p.Normalize();
 
@@ -337,7 +293,7 @@ bool AFPDevCharacter::AttachWeapon(UClass* ComponentClass)
 	FP_MuzzleLocation = NewNamedObject<USceneComponent>(this, TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->RegisterComponent();
 	FP_MuzzleLocation->AttachTo(FP_Gun);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+	FP_MuzzleLocation->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
 	return true;
 }
