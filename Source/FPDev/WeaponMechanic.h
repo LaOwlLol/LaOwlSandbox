@@ -37,17 +37,20 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		float FireDelay;
 
-	//Width of the 2D spread pattern.
+	//Width of the 2D spread pattern in terms of elements.
 	//Must be <= SpreadPattern.Num()
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon Functionality")
 		int32 SpreadWidth;
 
+	//Height of the 2D Spread hight in terms of elements.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Functionality")
 		int32 GetSpreadHeight() { return SpreadPattern.Num() / SpreadWidth; }
 
+	//Width of each cell in terms of unreal engine "units".
 	UFUNCTION(BlueprintCallable, Category = "Weapon Functionality")
 		float GetSpreadCellWidth() { return sqrt(SpreadArea) / SpreadWidth; }
 
+	//Height of each cell in terms of unreal engine "units"
 	UFUNCTION(BlueprintCallable, Category = "Weapon Functionality")
 		float GetSpreadCellHeight() { return sqrt(SpreadArea) / GetSpreadHeight(); }
 
@@ -55,9 +58,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon Functionality")
 		TArray<bool> SpreadPattern;
 
+	//Area in terms of unreal engine "units" of the SpreadPattern as it reaches SpreadDepth
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		float SpreadArea;
 
+	//Distance in terms of unreal engine "units" from the projectile spawn point SpreadPattern reaches full SpreaArea.
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		float SpreadDepth;
 
@@ -109,21 +114,27 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void DecreaseShotMultiplierDelay(float Delta) { ModifyShotMultiplierDelay(MultiplierDelay - Delta); }
 
+	//Set the SpreadDepth to given Depth. This method checks for a minimum and does not allow the value to be set below the min for SpreadDepth. All other methods that modify SpreadDepth should be passed to this method.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void ModifySpreadDepth(float Depth);
 
+	//Increase the SpreadDepth by Delta.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void IncreaseSpreadDepth(float Delta) { ModifySpreadDepth(SpreadDepth + Delta); }
 
+	//Decrease the SpreadDepth by Delta.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void DecreaseSpreadDepth(float Delta) { ModifySpreadDepth(SpreadDepth - Delta); }
 
+	//Set the SpreadArea to given Area. This method checks for a minimum and does not allow the vale to be set below the min for SpreadArea. All other methods that modify SpreadArea should be passed to this method.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void ModifySpreadArea(float Area);
-
+	
+	//Increase the SpreadArea by Delta.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void IncreaseSpreadArea(float Delta) { ModifySpreadArea(SpreadArea + Delta); }
 
+	//Decrease the SpreadArea by Delta.
 	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
 		void DecreaseSpreadArea(float Delta) { ModifySpreadArea(SpreadArea - Delta); }
 };

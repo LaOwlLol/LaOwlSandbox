@@ -24,14 +24,21 @@ public:
 	//Remaining health (basic implentation)
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category= "Health System") int32 Health;
 
+	//Check if health is remaining
+	//Default: false if health > 0.0 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
 		bool IsHealthDepleated() const;
 	virtual bool IsHealthDepleated_Implementation() const override;
 
+	//Event called when IsHealthDepleated is true.
+	//Default: destroy this character.
+	//Recommended to always end by destroy this character.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
 		void HealthDepleated();
 	virtual void HealthDepleated_Implementation() override;
 
+	//Apply damage.
+	//Default: Health -= DamageAmount.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Damage")
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;

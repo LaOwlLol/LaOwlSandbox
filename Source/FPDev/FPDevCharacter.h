@@ -48,12 +48,23 @@ public:
 	//UFUNCTION(BlueprintCallable, Category = "Weapon")
 	//	bool DetachWeapon();
 
+	//The characters WeaponMechanic, used to specify "how the character uses" the current weapon.
+	//See WeaponMechanics for "Weapon Functionality".
+	//Get the character's WeaponFunction member and use "Weapon Modifier" functions to modify the active WeaponMechanic's "Weapon Functionality" properties. 
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon Mechanic")
 		class UWeaponMechanic* WeaponFunction;
 
+	//Use this function change the character's WeaponFunction to a new WeaponMechanic of your choice.
+	//This method constructs a WeaponMechanic of your choice and makes it the acitive WeaponFunction.
+	//@Params: NewMechanicType - the WeaponMechanic subclass to change to.
+	//DO NOT: Pass this function a WeaponMechanic object.  
 	UFUNCTION(BlueprintCallable, Category = "Weapon Mechanic")
 		void ChangeWeaponMechanicClass(UClass* NewMechanicType);
 
+	//Use this function change the character's WeaponFunction to a WeaponMechanic object.
+	//This method sets the acitive WeaponFunction to a WeaponMechanic object.
+	//@Params: NewWeaponFunction - the WeaponMechanic object to change to.
+	//DO NOT: Pass this function a WeaponMechanic type.  
 	UFUNCTION(BlueprintCallable, Category = "Weapon Mechanic")
 		void SetWeaponFunction(UWeaponMechanic* NewWeaponFunction);
 
@@ -103,9 +114,6 @@ protected:
 	
 	/** Fires a projectile. */
 	void OnFire();
-
-	/** Resets HMD orientation and position in VR. */
-	void OnResetVR();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);

@@ -4,11 +4,11 @@
 #include "FPDevProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-AFPDevProjectile::AFPDevProjectile() 
+AFPDevProjectile::AFPDevProjectile() : ImpactVelocityTransferScale(100.0f)
 {
 	// Use a sphere as a simple collision representation
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-	CollisionComp->InitSphereRadius(5.0f);
+	//CollisionComp->InitSphereRadius(5.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComp->OnComponentHit.AddDynamic(this, &AFPDevProjectile::OnHit);		// set up a notification for when this component hits something blocking
 
@@ -30,7 +30,7 @@ void AFPDevProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, U
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 50.0f, GetActorLocation());
+		OtherComp->AddImpulseAtLocation(GetVelocity() * ImpactVelocityTransferScale, GetActorLocation());
 
 		Destroy();
 	}

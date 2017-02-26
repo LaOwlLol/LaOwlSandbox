@@ -22,10 +22,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
 		class USoundBase* ActivationSound;
 
+	//check if the weapon has a sound to play on activation.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Gameplay)
 		bool HasActivationSound() const;
 	virtual bool HasActivationSound_Implementation() const { return ActivationSound != NULL; }
 
+	//return the activation sound.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Gameplay)
 		class USoundBase* GetActivationSound() const;
 	virtual class USoundBase* GetActivationSound_Implementation() const;

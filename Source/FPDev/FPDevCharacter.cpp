@@ -69,14 +69,12 @@ void AFPDevCharacter::BeginPlay()
 	FireQueue.Init(true, 0);
 	TimeSinceBulletSpawn = 0.0f;
 
-	
 	Mesh1P->SetHiddenInGame(false, true);
 
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
 
+// Setup Input bindings
 void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
@@ -99,65 +97,18 @@ void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPDevCharacter::LookUpAtRate);
 }
 
+//respond to fire input
 void AFPDevCharacter::OnFire()
 {
 	// try and fire a projectile
-	if (FP_Gun != NULL)
-	{
+	if (FP_Gun != NULL) {
 		if (!(TimeSinceFire < WeaponFunction->FireDelay)) {
 			for (int32 i = 0; i < WeaponFunction->ShotMultiplier; ++i) {
 				FireQueue.Add(true);
-			}
-			
+			}	
 		}
-	
 	}
-
-	
 }
-
-void AFPDevCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
-//Commenting this section out to be consistent with FPS BP template.
-//This allows the user to turn without using the right virtual joystick
-
-//void AFPDevCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-//	{
-//		if (TouchItem.bIsPressed)
-//		{
-//			if (GetWorld() != nullptr)
-//			{
-//				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-//				if (ViewportClient != nullptr)
-//				{
-//					FVector MoveDelta = Location - TouchItem.Location;
-//					FVector2D ScreenSize;
-//					ViewportClient->GetViewportSize(ScreenSize);
-//					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-//					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.X * BaseTurnRate;
-//						AddControllerYawInput(Value);
-//					}
-//					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.Y * BaseTurnRate;
-//						AddControllerPitchInput(Value);
-//					}
-//					TouchItem.Location = Location;
-//				}
-//				TouchItem.Location = Location;
-//			}
-//		}
-//	}
-//}
 
 void AFPDevCharacter::MoveForward(float Value)
 {
@@ -231,38 +182,41 @@ void AFPDevCharacter::Tick(float DeltaTime)
 				//Set Spawn Collision Handling Override
 				FActorSpawnParameters ActorSpawnParams;
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-				// spawn the projectile at the muzzle
-
-				int32 i = 0;
+				
 				float cellH = WeaponFunction->GetSpreadCellHeight();
 				float cellW = WeaponFunction->GetSpreadCellWidth();
 				FVector Forward = UKismetMathLibrary::GetForwardVector(SpawnRotation);
 				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
 				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
+				int32 i = 0;
+				//for each element or cell in the SpreadPattern array.
 				for (auto& cell : WeaponFunction->SpreadPattern) {
 					if (cell) {
+						//transform Pattern index to x and y coordinates
 						float x = i%WeaponFunction->SpreadWidth - (float(WeaponFunction->SpreadWidth) / 2.0f);
 						float y = (i / WeaponFunction->SpreadWidth - (float(WeaponFunction->GetSpreadHeight()) / 2.0f));
+
+						//use x, y, and SpreadDepth to transform the projectile's spawn point to the projectile's target point.
 						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
 						p += WeaponFunction->SpreadDepth * Forward;
 						p += ((y * cellH) + (0.5f * cellH)) * Up;
 						p += ((x * cellW) + (0.5f * cellW)) * Right;
 
+						//get the direction vector normalized.
 						p = p - SpawnLocation;
-
 						p.Normalize();
 
+						//spawn a projectile at the weapon barrel which is rotated to point at it's SpreadPattern target point.
 						World->SpawnActor<AFPDevProjectile>(ProjectileClass,
 							SpawnLocation,
 							p.ToOrientationRotator(), ActorSpawnParams);
 					}
 
+					//next cell.
 					++i;
 				}
 
 				
-
 				FireQueue.RemoveAt(0);
 				TimeSinceBulletSpawn = 0.0f;
 			}
