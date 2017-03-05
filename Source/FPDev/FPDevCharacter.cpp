@@ -183,24 +183,26 @@ void AFPDevCharacter::Tick(float DeltaTime)
 				FActorSpawnParameters ActorSpawnParams;
 				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 				
-				float cellH = WeaponFunction->GetSpreadCellHeight();
-				float cellW = WeaponFunction->GetSpreadCellWidth();
+				float cellDim = WeaponFunction->GetSpreadCellDim();
+				float offSetW = (float(WeaponFunction->SpreadWidth) / 2.0f);
+				float offSetH = (float(WeaponFunction->GetSpreadHeight()) / 2.0f);
 				FVector Forward = UKismetMathLibrary::GetForwardVector(SpawnRotation);
 				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
 				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
+				FVector Dist = WeaponFunction->SpreadDepth * Forward;
 				int32 i = 0;
 				//for each element or cell in the SpreadPattern array.
 				for (auto& cell : WeaponFunction->SpreadPattern) {
 					if (cell) {
 						//transform Pattern index to x and y coordinates
-						float x = i%WeaponFunction->SpreadWidth - (float(WeaponFunction->SpreadWidth) / 2.0f);
-						float y = (i / WeaponFunction->SpreadWidth - (float(WeaponFunction->GetSpreadHeight()) / 2.0f));
+						float x = (i%WeaponFunction->SpreadWidth) - offSetW;
+						float y = (i/WeaponFunction->SpreadWidth) - offSetH;
 
 						//use x, y, and SpreadDepth to transform the projectile's spawn point to the projectile's target point.
 						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
-						p += WeaponFunction->SpreadDepth * Forward;
-						p += ((y * cellH) + (0.5f * cellH)) * Up;
-						p += ((x * cellW) + (0.5f * cellW)) * Right;
+						p += Dist;
+						p += (y * cellDim) * Up;
+						p += ((x * cellDim) + cellDim) * Right;
 
 						//get the direction vector normalized.
 						p = p - SpawnLocation;

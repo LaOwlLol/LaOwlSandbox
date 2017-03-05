@@ -30,15 +30,11 @@ UWeaponMechanic::UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, 
 
 }*/
 
-float UWeaponMechanic::GetSpreadCellWidth() { 
+float UWeaponMechanic::GetSpreadCellDim() { 
 	float TotalX = SpreadWidth + GetSpreadHeight();
 	float RatioAreaToX = SpreadArea / TotalX;
 
 	return sqrt(RatioAreaToX); 
-}
-
-float UWeaponMechanic::GetSpreadCellHeight() {
-	return GetSpreadCellWidth();
 }
 
 bool UWeaponMechanic::ChangePattern(const TArray<bool>& NewPattern, int32 Width) {
