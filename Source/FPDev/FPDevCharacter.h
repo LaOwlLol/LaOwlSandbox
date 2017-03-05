@@ -23,7 +23,14 @@ class AFPDevCharacter : public ACharacter, public IMortalInterface
 	class UCameraComponent* FirstPersonCameraComponent;
 
 	TArray<bool> FireQueue;
+
+	bool TriggerHeld;
+
+	void ToggleTrigger() {
+		TriggerHeld = !TriggerHeld;
+	}
 	
+	void FireWeapon(float DeltaTime);
 
 public:
 	AFPDevCharacter();

@@ -52,7 +52,6 @@ AFPDevCharacter::AFPDevCharacter()
 	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P, and FP_Gun
 	// are set in the derived blueprint asset named MyCharacter to avoid direct content references in C++.
 	
-	Health = 100.0f;
 }
 
 void AFPDevCharacter::BeginPlay()
@@ -71,8 +70,9 @@ void AFPDevCharacter::BeginPlay()
 
 	Mesh1P->SetHiddenInGame(false, true);
 
-}
+	TriggerHeld = false;
 
+}
 
 // Setup Input bindings
 void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -83,6 +83,9 @@ void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPDevCharacter::OnFire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFPDevCharacter::ToggleTrigger);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AFPDevCharacter::ToggleTrigger);
+	
 
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFPDevCharacter::MoveForward);
@@ -97,15 +100,100 @@ void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPDevCharacter::LookUpAtRate);
 }
 
+void AFPDevCharacter::FireWeapon(float DeltaTime) {
+	if (FireQueue.Num() > 0 && TimeSinceBulletSpawn > WeaponFunction->MultiplierDelay) {
+		const FRotator SpawnRotation = GetControlRotation();
+
+		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FVector(100.0f, 0.0f, 0.0f));
+		//const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(FP_Gun->GunOffset);
+
+		if (ProjectileClass != NULL) {
+
+			UWorld* const World = GetWorld();
+
+			if (World != NULL)
+			{
+
+				if (FP_Gun != NULL) {
+					// try and play the sound if specified
+					if (FP_Gun->HasActivationSound())
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->GetActivationSound(), GetActorLocation());
+					}
+
+					// try and play a firing animation if specified
+					if (FP_Gun->HasActivationAnimation())
+					{
+						// Get the animation object for the arms mesh
+						UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+						if (AnimInstance != NULL)
+						{
+							AnimInstance->Montage_Play(FP_Gun->GetActivationAnimation(), 1.f);
+						}
+					}
+				}
+				//Set Spawn Collision Handling Override
+				FActorSpawnParameters ActorSpawnParams;
+				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+				float cellDim = WeaponFunction->GetSpreadCellDim();
+				float offSetW = (float(WeaponFunction->SpreadWidth) / 2.0f);
+				float offSetH = (float(WeaponFunction->GetSpreadHeight()) / 2.0f);
+				FVector Forward = UKismetMathLibrary::GetForwardVector(SpawnRotation);
+				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
+				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
+				FVector Dist = WeaponFunction->SpreadDepth * Forward;
+				int32 i = 0;
+				//for each element or cell in the SpreadPattern array.
+				for (auto& cell : WeaponFunction->SpreadPattern) {
+					if (cell) {
+						//transform Pattern index to x and y coordinates
+						float x = (i%WeaponFunction->SpreadWidth) - offSetW;
+						float y = (i / WeaponFunction->SpreadWidth) - offSetH;
+
+						//use x, y, and SpreadDepth to transform the projectile's spawn point to the projectile's target point.
+						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+						p += Dist;
+						p += (y * cellDim) * Up;
+						p += ((x * cellDim) + cellDim) * Right;
+
+						//get the direction vector normalized.
+						p = p - SpawnLocation;
+						p.Normalize();
+
+						//spawn a projectile at the weapon barrel which is rotated to point at it's SpreadPattern target point.
+						World->SpawnActor<AFPDevProjectile>(ProjectileClass,
+							SpawnLocation,
+							p.ToOrientationRotator(), ActorSpawnParams);
+					}
+
+					//next cell.
+					++i;
+				}
+
+
+				FireQueue.RemoveAt(0);
+				TimeSinceBulletSpawn = 0.0f;
+			}
+		}
+	}
+	else {
+		TimeSinceBulletSpawn += DeltaTime;
+		TimeSinceFire += DeltaTime;
+	}
+}
+
 //respond to fire input
 void AFPDevCharacter::OnFire()
 {
 	// try and fire a projectile
 	if (FP_Gun != NULL) {
-		if (!(TimeSinceFire < WeaponFunction->FireDelay)) {
+		if (TimeSinceFire > WeaponFunction->FireDelay) {
 			for (int32 i = 0; i < WeaponFunction->ShotMultiplier; ++i) {
 				FireQueue.Add(true);
-			}	
+			}
+			TimeSinceFire = 0.0;
 		}
 	}
 }
@@ -147,86 +235,10 @@ void AFPDevCharacter::Tick(float DeltaTime)
 		HealthDepleated();
 	}
 
-	if (FireQueue.Num() > 0 && !(TimeSinceBulletSpawn < WeaponFunction->MultiplierDelay) ) {
-		const FRotator SpawnRotation = GetControlRotation();
+	FireWeapon(DeltaTime);
 
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(FVector(100.0f, 0.0f, 0.0f));
-		//const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(FP_Gun->GunOffset);
-		
-		if (ProjectileClass != NULL) {
-
-			UWorld* const World = GetWorld();
-
-			if (World != NULL)
-			{
-
-				if (FP_Gun != NULL) {
-					// try and play the sound if specified
-					if (FP_Gun->HasActivationSound())
-					{
-						UGameplayStatics::PlaySoundAtLocation(this, FP_Gun->GetActivationSound(), GetActorLocation());
-					}
-
-					// try and play a firing animation if specified
-					if (FP_Gun->HasActivationAnimation())
-					{
-						// Get the animation object for the arms mesh
-						UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-						if (AnimInstance != NULL)
-						{
-							AnimInstance->Montage_Play(FP_Gun->GetActivationAnimation(), 1.f);
-						}
-					}
-				}
-				//Set Spawn Collision Handling Override
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-				
-				float cellDim = WeaponFunction->GetSpreadCellDim();
-				float offSetW = (float(WeaponFunction->SpreadWidth) / 2.0f);
-				float offSetH = (float(WeaponFunction->GetSpreadHeight()) / 2.0f);
-				FVector Forward = UKismetMathLibrary::GetForwardVector(SpawnRotation);
-				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
-				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
-				FVector Dist = WeaponFunction->SpreadDepth * Forward;
-				int32 i = 0;
-				//for each element or cell in the SpreadPattern array.
-				for (auto& cell : WeaponFunction->SpreadPattern) {
-					if (cell) {
-						//transform Pattern index to x and y coordinates
-						float x = (i%WeaponFunction->SpreadWidth) - offSetW;
-						float y = (i/WeaponFunction->SpreadWidth) - offSetH;
-
-						//use x, y, and SpreadDepth to transform the projectile's spawn point to the projectile's target point.
-						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
-						p += Dist;
-						p += (y * cellDim) * Up;
-						p += ((x * cellDim) + cellDim) * Right;
-
-						//get the direction vector normalized.
-						p = p - SpawnLocation;
-						p.Normalize();
-
-						//spawn a projectile at the weapon barrel which is rotated to point at it's SpreadPattern target point.
-						World->SpawnActor<AFPDevProjectile>(ProjectileClass,
-							SpawnLocation,
-							p.ToOrientationRotator(), ActorSpawnParams);
-					}
-
-					//next cell.
-					++i;
-				}
-
-				
-				FireQueue.RemoveAt(0);
-				TimeSinceBulletSpawn = 0.0f;
-			}
-		}
-	}
-	else {
-		TimeSinceBulletSpawn += DeltaTime;
-		TimeSinceFire += DeltaTime;
+	if (TriggerHeld && WeaponFunction->FullAutomatic) {
+		OnFire();
 	}
 }
 

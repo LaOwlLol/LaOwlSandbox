@@ -16,14 +16,12 @@ class FPDEV_API UWeaponMechanic : public UObject
 public:
 
 	//Create a Basic WeaponMechanic
-	
 	UWeaponMechanic();
 
-	//Create basic Multishot WeaponMechanic
-	UWeaponMechanic(int32 Multiplier);
 
-	//Create custom WeaponMechanic
-	UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, int32 Width);
+	//Whether the trigger can be held to continue firing or not.
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
+		bool FullAutomatic;
 
 	//The number of shot to fire on a single trigger pull.
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
@@ -61,6 +59,9 @@ public:
 	//Distance in terms of unreal engine "units" from the projectile spawn point SpreadPattern reaches full SpreaArea.
 	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Weapon Functionality")
 		float SpreadDepth;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon Modifiers")
+		bool ToggleFullAutomatic() { return FullAutomatic = !FullAutomatic; }
 
 	//Set the Spread Pattern from an array given the width
 	//Width must be  0 > and <= NewPattern.Num() (size or length of array)

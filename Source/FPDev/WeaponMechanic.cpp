@@ -4,31 +4,12 @@
 #include "WeaponMechanic.h"
 
 
-UWeaponMechanic::UWeaponMechanic() : ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(100.0f), SpreadArea(4.0f) {
+UWeaponMechanic::UWeaponMechanic() : FullAutomatic(false), ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(100.0f), SpreadArea(4.0f) {
 
 	SpreadPattern.Init(false, SpreadWidth);
 	SpreadPattern[1] = true;
 
 }
-
-UWeaponMechanic::UWeaponMechanic(int32 Multiplier) : ShotMultiplier(Multiplier), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(100.0f), SpreadArea(4.0f) {
-
-	SpreadPattern.Init(false, SpreadWidth);
-	SpreadPattern[1] = true;
-
-}
-
-UWeaponMechanic::UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, int32 Width) : ShotMultiplier(Multiplier), MultiplierDelay(0.05), FireDelay(0.2), SpreadWidth(Width), SpreadDepth(100.0f), SpreadArea(4.0f) {
-
-	SpreadPattern = Pattern;
-
-}
-
-/*UWeaponMechanic::UWeaponMechanic(const UWeaponMechanic& Copy) : ShotMultiplier(Copy.ShotMultiplier), SpreadWidth(Copy.SpreadWidth) {
-
-	SpreadPattern = Copy.SpreadPattern;
-
-}*/
 
 float UWeaponMechanic::GetSpreadCellDim() { 
 	float TotalX = SpreadWidth + GetSpreadHeight();
