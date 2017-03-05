@@ -30,6 +30,17 @@ UWeaponMechanic::UWeaponMechanic(int32 Multiplier, const TArray<bool>& Pattern, 
 
 }*/
 
+float UWeaponMechanic::GetSpreadCellWidth() { 
+	float TotalX = SpreadWidth + GetSpreadHeight();
+	float RatioAreaToX = SpreadArea / TotalX;
+
+	return sqrt(RatioAreaToX); 
+}
+
+float UWeaponMechanic::GetSpreadCellHeight() {
+	return GetSpreadCellWidth();
+}
+
 bool UWeaponMechanic::ChangePattern(const TArray<bool>& NewPattern, int32 Width) {
 	if (Width <= NewPattern.Num()) {
 		SpreadWidth = Width;

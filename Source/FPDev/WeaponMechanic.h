@@ -48,11 +48,11 @@ public:
 
 	//Width of each cell in terms of unreal engine "units".
 	UFUNCTION(BlueprintCallable, Category = "Weapon Functionality")
-		float GetSpreadCellWidth() { return sqrt(SpreadArea) / SpreadWidth; }
+		float GetSpreadCellWidth();
 
 	//Height of each cell in terms of unreal engine "units"
 	UFUNCTION(BlueprintCallable, Category = "Weapon Functionality")
-		float GetSpreadCellHeight() { return sqrt(SpreadArea) / GetSpreadHeight(); }
+		float GetSpreadCellHeight();
 
 	//Pattern of the projectiles fired per shot.
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Weapon Functionality")
