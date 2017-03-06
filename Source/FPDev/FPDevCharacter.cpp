@@ -155,8 +155,8 @@ void AFPDevCharacter::FireWeapon(float DeltaTime) {
 						//use x, y, and SpreadDepth to transform the projectile's spawn point to the projectile's target point.
 						FVector p = FVector(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
 						p += Dist;
-						p += (y * cellDim) * Up;
-						p += ((x * cellDim) + cellDim) * Right;
+						p += ((y * cellDim) + (0.5f * cellDim)) * Up;
+						p += ((x * cellDim) + (0.5f * cellDim)) * Right;
 
 						//get the direction vector normalized.
 						p = p - SpawnLocation;

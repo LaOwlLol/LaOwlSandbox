@@ -4,7 +4,7 @@
 #include "WeaponMechanic.h"
 
 
-UWeaponMechanic::UWeaponMechanic() : FullAutomatic(false), ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(100.0f), SpreadArea(4.0f) {
+UWeaponMechanic::UWeaponMechanic() : FullAutomatic(false), ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(10.0f), SpreadArea(10.0f) {
 
 	SpreadPattern.Init(false, SpreadWidth);
 	SpreadPattern[1] = true;
