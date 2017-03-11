@@ -4,7 +4,7 @@
 #include "WeaponMechanic.h"
 
 
-UWeaponMechanic::UWeaponMechanic() : FullAutomatic(false), ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.2f), SpreadWidth(3), SpreadDepth(10.0f), SpreadArea(10.0f) {
+UWeaponMechanic::UWeaponMechanic() : FullAutomatic(false), ShotMultiplier(1), MultiplierDelay(0.05f), FireDelay(0.15f), SpreadWidth(3), SpreadDepth(10.0f), SpreadArea(10.0f) {
 
 	SpreadPattern.Init(false, SpreadWidth);
 	SpreadPattern[1] = true;
@@ -35,37 +35,43 @@ void UWeaponMechanic::ModifyShotMultiplier(int32 Multiplier) {
 	if (ShotMultiplier < 1) {
 		ShotMultiplier = 1;
 	}
+
+	//reset our fire delay to check it for validity and set if to minimum fire delay if invalid.
+	ModifyFireDelay(FireDelay);
 }
 
 
 void UWeaponMechanic::ModifyFireDelay(float Delay) { 
 	FireDelay = Delay; 
 	
-	if (FireDelay < 0.0f) {
-		FireDelay = 0.0f;
+	if (FireDelay < ShotMultiplier * MultiplierDelay) {
+		FireDelay = ShotMultiplier * MultiplierDelay;
 	}
 }
 
 void UWeaponMechanic::ModifyShotMultiplierDelay(float Delay) { 
 	MultiplierDelay = Delay; 
 	
-	if (MultiplierDelay < 0.0f) {
-		MultiplierDelay = 0.0f;
+	if (MultiplierDelay < 0.001f) {
+		MultiplierDelay = 0.001f;
 	}
+
+	//reset our fire delay to check it for validity and set if to minimum fire delay if invalid.
+	ModifyFireDelay(FireDelay);
 }
 
 void UWeaponMechanic::ModifySpreadDepth(float Depth) {
 	SpreadDepth = Depth;
 
-	if (SpreadDepth < 0.0f) {
-		SpreadDepth = 0.0f;
+	if (SpreadDepth < 1.0f) {
+		SpreadDepth = 1.0f;
 	}
 }
 
 void UWeaponMechanic::ModifySpreadArea(float Area) {
 	SpreadArea = Area;
 
-	if (SpreadArea < 0.0f) {
-		SpreadArea = 0.0f;
+	if (SpreadArea < 1.0f) {
+		SpreadArea = 1.0f;
 	}
 }
