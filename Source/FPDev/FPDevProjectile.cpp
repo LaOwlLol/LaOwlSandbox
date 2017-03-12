@@ -23,6 +23,9 @@ AFPDevProjectile::AFPDevProjectile() : ImpactVelocityTransferScale(100.0f)
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void AFPDevProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

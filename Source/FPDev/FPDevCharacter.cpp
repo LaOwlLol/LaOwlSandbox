@@ -12,21 +12,16 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 //////////////////////////////////////////////////////////////////////////
 // AFPDevCharacter
 
-AFPDevCharacter::AFPDevCharacter()
+AFPDevCharacter::AFPDevCharacter() : Super()
 {
 	
-	// Create a CameraComponent	
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->RelativeLocation = FVector(-39.56f, 1.75f, 64.f); // Position the camera
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
+	SetUpFirstPersonView();
 	// Create a gun mesh component
 	//WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("FP_Gun"));
 	//WeaponComponent->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
 	//WeaponComponent->bCastDynamicShadow = false;
 	//WeaponComponent->CastShadow = false;
-	// WeaponComponent->SetupAttachment(FirstPersonMesh, TEXT("GripPoint"));
+	//WeaponComponent->SetupAttachment(FirstPersonMesh, TEXT("GripPoint"));
 	//WeaponComponent->SetupAttachment(RootComponent);
 
 	//FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
