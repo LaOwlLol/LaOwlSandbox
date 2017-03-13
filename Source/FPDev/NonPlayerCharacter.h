@@ -3,10 +3,11 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "MortalCharacter.h"
 #include "NonPlayerCharacter.generated.h"
 
-UCLASS()
-class FPDEV_API ANonPlayerCharacter : public ACharacter
+UCLASS(Blueprintable)
+class FPDEV_API ANonPlayerCharacter : public AMortalCharacter
 {
 	GENERATED_BODY()
 
@@ -22,6 +23,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(EditAnyWhere, Category = "AI Controller")
+	UPROPERTY(EditAnyWhere, Category = Pawn)
 	class UBehaviorTree* BehaviorTree;
 };

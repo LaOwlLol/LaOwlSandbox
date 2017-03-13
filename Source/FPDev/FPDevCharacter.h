@@ -10,8 +10,14 @@ UCLASS(Blueprintable)
 class AFPDevCharacter : public AMortalCharacter
 {
 	GENERATED_BODY()
+
+	/** First person camera */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UCameraComponent* FirstPersonCameraComponent;
 	
 protected:
+
+	void SetUpFirstPersonView();
 
 	virtual void BeginPlay() override;
 
@@ -21,6 +27,9 @@ protected:
 
 public:
 	AFPDevCharacter();
+
+	/** Returns FirstPersonCameraComponent subobject **/
+	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 	// Called every frame
 	virtual void Tick(float DeltaSeconds);

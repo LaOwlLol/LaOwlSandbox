@@ -16,14 +16,6 @@ class FPDEV_API AMortalCharacter : public ACharacter, public IMortalInterface
 {
 	GENERATED_BODY()
 
-	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FirstPersonCameraComponent;
-
-	//First person view mesh
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FirstPersonMesh;
-
 	//List of rounds queued to fire.
 	TArray<bool> FireQueue;
 
@@ -34,10 +26,13 @@ class FPDEV_API AMortalCharacter : public ACharacter, public IMortalInterface
 	void FireWeapon(float DeltaTime);
 
 protected:
+	
+	//First person view mesh
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class USkeletalMeshComponent* FirstPersonMesh;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	void SetUpFirstPersonView();
 
 	//Change TriggerHeld state
 	void ToggleTrigger() {
@@ -150,8 +145,6 @@ public:
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 
-	/** Returns FirstPersonCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	/** Returns FirstPersonMesh subobject **/
 	FORCEINLINE class USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
 };
