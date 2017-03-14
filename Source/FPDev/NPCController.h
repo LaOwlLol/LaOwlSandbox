@@ -3,8 +3,6 @@
 #pragma once
 
 #include "AIController.h"
-#include "NonPlayerCharacter.h"
-
 #include "NPCController.generated.h"
 
 /**

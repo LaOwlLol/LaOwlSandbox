@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FPDev.h"
-#include "NPCController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "MortalCharacter.h"
+#include "NPCController.h"
+#include "NonPlayerCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "AgroCheck.h"
 
@@ -28,8 +28,9 @@ void UAgroCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, 
 	//Init sweep parms struct with trace complex set to true
 	FCollisionQueryParams SphereSweepParams(FName(TEXT("AgroCheckSweep")), true, ThisAICharacter);
 
+	//channel should match player channel
 	FCollisionObjectQueryParams ObjectQuery(ECC_GameTraceChannel2);
-
+	
 	//init hit result
 	FHitResult HitOut(ForceInit);
 
@@ -37,7 +38,8 @@ void UAgroCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, 
 	DrawDebugSphere(ThisAICharacter->GetWorld(), ThisAICharacter->GetActorLocation(), 1500, 12, FColor::Red, false, 4.0f);
 
 	//sweep test
-	bool bResult = ThisAICharacter->GetWorld()->SweepSingleByObjectType(HitOut, ThisAICharacter->GetActorLocation(),
+	bool bResult = ThisAICharacter->GetWorld()->SweepSingleByObjectType(HitOut, 
+		ThisAICharacter->GetActorLocation(),
 		ThisAICharacter->GetActorLocation() + FVector(0.0f, 0.0f, 10.0f),
 		FQuat(), ObjectQuery,
 		FCollisionShape::MakeSphere(1500),

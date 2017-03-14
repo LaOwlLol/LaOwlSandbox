@@ -5,6 +5,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "NPCController.h"
+#include "NonPlayerCharacter.h"
 
 
 ANPCController::ANPCController() {
