@@ -11,13 +11,19 @@ class AFPDevCharacter : public AMortalCharacter
 {
 	GENERATED_BODY()
 
-	/** First person camera */
+	//First person camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;
+
+	//First person view mesh
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class USkeletalMeshComponent* FirstPersonMesh;
 	
 protected:
 
-	void SetUpFirstPersonView();
+	virtual class USkeletalMeshComponent* GetCharaterUsedMesh() override;
+
+	virtual void SetupCharacterView() override;
 
 	virtual void BeginPlay() override;
 
@@ -28,11 +34,17 @@ protected:
 public:
 	AFPDevCharacter();
 
-	/** Returns FirstPersonCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
 	// Called every frame
 	virtual void Tick(float DeltaSeconds);
 
+	//Attach a weaponComponent of CompClass to
+	//Each derived class implements this method to attach weapon.
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		virtual bool AttachWeapon(UClass* ComponentClass) override;
+
+	//Returns FirstPersonCameraComponent subobject
+	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }	
+	//Returns FirstPersonMesh subobject
+	FORCEINLINE class USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
 };
 

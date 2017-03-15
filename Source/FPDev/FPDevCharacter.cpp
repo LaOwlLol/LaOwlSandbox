@@ -15,7 +15,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AFPDevCharacter::AFPDevCharacter() : Super()
 {
 	
-	SetUpFirstPersonView();
+	SetupCharacterView();
 	// Create a gun mesh component
 	//WeaponComponent = CreateDefaultSubobject<UWeaponComponent>(TEXT("FP_Gun"));
 	//WeaponComponent->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
@@ -33,8 +33,13 @@ AFPDevCharacter::AFPDevCharacter() : Super()
 	
 }
 
-void AFPDevCharacter::SetUpFirstPersonView() {
-	// Create a CameraComponent	
+USkeletalMeshComponent * AFPDevCharacter::GetCharaterUsedMesh()
+{
+	return FirstPersonMesh;
+}
+
+void AFPDevCharacter::SetupCharacterView() {
+	// Create a CameraComponent
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->RelativeLocation = FVector(-39.56f, 1.75f, 64.f); // Position the camera
@@ -83,6 +88,30 @@ void AFPDevCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInp
 	PlayerInputComponent->BindAxis("TurnRate", this, &AFPDevCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFPDevCharacter::LookUpAtRate);
+}
+
+bool AFPDevCharacter::AttachWeapon(UClass* ComponentClass)
+{
+	//CompClass can be a BP
+	WeaponComponent = NewObject<UWeaponComponent>(this, ComponentClass);
+	if (!WeaponComponent)
+	{
+		return false;
+	}
+
+	WeaponComponent->RegisterComponent();			//You must ConstructObject with a valid Outer that has world, see above	 
+	WeaponComponent->AttachTo(RootComponent, NAME_None, EAttachLocation::SnapToTarget);
+	WeaponComponent->AttachToComponent(FirstPersonMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
+	WeaponComponent->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	WeaponComponent->bCastDynamicShadow = false;
+	WeaponComponent->CastShadow = false;
+
+	FP_MuzzleLocation = NewNamedObject<USceneComponent>(this, TEXT("MuzzleLocation"));
+	FP_MuzzleLocation->RegisterComponent();
+	FP_MuzzleLocation->AttachTo(WeaponComponent);
+	FP_MuzzleLocation->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+
+	return true;
 }
 
 void AFPDevCharacter::Tick(float DeltaTime)

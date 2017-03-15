@@ -19,6 +19,15 @@ AMortalCharacter::AMortalCharacter()
 
 }
 
+void AMortalCharacter::SetupCharacterView()
+{
+}
+
+USkeletalMeshComponent * AMortalCharacter::GetCharaterUsedMesh()
+{
+	return GetMesh();
+}
+
 // Called when the game starts or when spawned
 void AMortalCharacter::BeginPlay()
 {
@@ -56,26 +65,7 @@ void AMortalCharacter::Tick(float DeltaTime)
 
 bool AMortalCharacter::AttachWeapon(UClass* ComponentClass)
 {
-	//CompClass can be a BP
-	WeaponComponent = NewObject<UWeaponComponent>(this, ComponentClass);
-	if (!WeaponComponent)
-	{
-		return false;
-	}
-
-	WeaponComponent->RegisterComponent();			//You must ConstructObject with a valid Outer that has world, see above	 
-	WeaponComponent->AttachTo(RootComponent, NAME_None, EAttachLocation::SnapToTarget);
-	WeaponComponent->AttachToComponent(FirstPersonMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
-	WeaponComponent->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	WeaponComponent->bCastDynamicShadow = false;
-	WeaponComponent->CastShadow = false;
-
-	FP_MuzzleLocation = NewNamedObject<USceneComponent>(this, TEXT("MuzzleLocation"));
-	FP_MuzzleLocation->RegisterComponent();
-	FP_MuzzleLocation->AttachTo(WeaponComponent);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-
-	return true;
+	return false;
 }
 
 void AMortalCharacter::FireWeapon(float DeltaTime) {
@@ -104,7 +94,7 @@ void AMortalCharacter::FireWeapon(float DeltaTime) {
 					if (WeaponComponent->HasActivationAnimation())
 					{
 						// Get the animation object for the arms mesh
-						UAnimInstance* AnimInstance = FirstPersonMesh->GetAnimInstance();
+						UAnimInstance* AnimInstance = GetCharaterUsedMesh()->GetAnimInstance();
 						if (AnimInstance != NULL)
 						{
 							AnimInstance->Montage_Play(WeaponComponent->GetActivationAnimation(), 1.f);
@@ -162,9 +152,7 @@ void AMortalCharacter::FireWeapon(float DeltaTime) {
 	}
 }
 
-// respond to fire input
-void AMortalCharacter::OnFire()
-{
+bool AMortalCharacter::ActivateWeapon() {
 	// try and fire a projectile
 	if (WeaponComponent != NULL) {
 		if (TimeSinceFire > WeaponFunction->FireDelay) {
@@ -172,8 +160,16 @@ void AMortalCharacter::OnFire()
 				FireQueue.Add(true);
 			}
 			TimeSinceFire = 0.0;
+			return true;
 		}
 	}
+	return false;
+}
+
+// respond to fire input
+void AMortalCharacter::OnFire()
+{
+	ActivateWeapon();
 }
 
 void AMortalCharacter::MoveForward(float Value)

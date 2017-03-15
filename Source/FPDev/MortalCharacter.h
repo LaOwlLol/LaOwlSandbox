@@ -27,9 +27,9 @@ class FPDEV_API AMortalCharacter : public ACharacter, public IMortalInterface
 
 protected:
 	
-	//First person view mesh
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FirstPersonMesh;
+	virtual void SetupCharacterView();
+
+	virtual class USkeletalMeshComponent* GetCharaterUsedMesh();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,7 +39,7 @@ protected:
 		TriggerHeld = !TriggerHeld;
 	}
 
-	/** Fires a projectile. */
+	//Fire Event Triggered by input.
 	void OnFire();
 
 	/** Handles moving forward/backward */
@@ -76,9 +76,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	class UWeaponComponent* WeaponComponent = NULL;
 
-	//Attach a weaponComponent of CompClass to 
+	//Attach a weaponComponent of CompClass to
+	//Each derived class implements this method to attach weapon.
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-		bool AttachWeapon(UClass* ComponentClass);
+		virtual bool AttachWeapon(UClass* ComponentClass);
+
+	//Fire Event Triggered by input.
+	UFUNCTION(BlueprintCallable, Category = "Weapon Operation")
+		bool ActivateWeapon();
+	
 
 	//UFUNCTION(BlueprintCallable, Category = "Weapon")
 	//	bool DetachWeapon();
@@ -145,6 +151,4 @@ public:
 		float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser);
 	virtual float TakeDamage_Implementation(float DamageAmount, struct FDamageEvent const & DamageEvent, class AController * EventInstigator, AActor * DamageCauser) override;
 
-	/** Returns FirstPersonMesh subobject **/
-	FORCEINLINE class USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
 };
