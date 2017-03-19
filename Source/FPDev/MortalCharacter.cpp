@@ -1,7 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "FPDev.h"
+#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
+#include "Animation/AnimInstance.h"
+#include "WeaponComponent.h"
+#include "WeaponMechanic.h"
+#include "FPDevProjectile.h"
 #include "MortalCharacter.h"
+
 
 
 // Sets default values
@@ -33,8 +39,6 @@ void AMortalCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Attach gun mesh component to Skeleton, doing it here because the skeleton is not yet created in the constructor
-	//WeaponComponent->AttachToComponent(FirstPersonMesh, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 	WeaponFunction = NewObject<UWeaponMechanic>();
 
 	TimeSinceFire = 0.0f;
@@ -210,6 +214,7 @@ void AMortalCharacter::ChangeWeaponMechanicClass(UClass* NewMechanicType) {
 	WeaponFunction = NewObject<UWeaponMechanic>(this, NewMechanicType);
 }
 
+//check is health 0.0 or less.
 bool AMortalCharacter::IsHealthDepleated_Implementation() const {
 	return !(Health > 0.0);
 }

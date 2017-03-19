@@ -39,6 +39,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Projectile Characteristics") float GetDamage() const;
 	virtual float GetDamage_Implementation() const;
 
+	void AddVelocity(FVector Delta);
+
 	/** Returns CollisionComp subobject **/
 	FORCEINLINE class USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/

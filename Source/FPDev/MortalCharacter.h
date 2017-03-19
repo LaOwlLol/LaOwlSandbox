@@ -3,12 +3,7 @@
 #pragma once
 
 #include "GameFramework/Character.h"
-#include "Animation/AnimInstance.h"
-#include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "MortalInterface.h"
-#include "WeaponComponent.h"
-#include "WeaponMechanic.h"
-#include "FPDevProjectile.h"
 #include "MortalCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -27,6 +22,7 @@ class FPDEV_API AMortalCharacter : public ACharacter, public IMortalInterface
 
 protected:
 	
+	//initialize the character's mesh and other viewable components
 	virtual void SetupCharacterView();
 
 	virtual class USkeletalMeshComponent* GetCharaterUsedMesh();

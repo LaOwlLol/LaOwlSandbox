@@ -1,11 +1,10 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 
 #include "FPDev.h"
-#include "FPDevCharacter.h"
-
-#include "GameFramework/InputSettings.h"
 #include "Kismet/HeadMountedDisplayFunctionLibrary.h"
-#include "MotionControllerComponent.h"
+#include "GameFramework/InputSettings.h"
+#include "FPDevCharacter.h"
+#include "WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 

@@ -50,3 +50,8 @@ UProjectileMovementComponent*  AFPDevProjectile::InitProjectileMovementComponent
 float AFPDevProjectile::GetDamage_Implementation() const{
 	return 10.0;
 }
+
+void AFPDevProjectile::AddVelocity(FVector Delta)
+{
+	GetProjectileMovement()->Velocity = GetVelocity() + Delta;
+}
