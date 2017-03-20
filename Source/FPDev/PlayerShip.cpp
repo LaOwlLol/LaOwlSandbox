@@ -31,6 +31,8 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent * PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AShipPawn::PitchAtRate);
 	PlayerInputComponent->BindAxis("Impulse", this, &AShipPawn::ModifyEngineImpluse);
+	PlayerInputComponent->BindAxis("Thruster", this, &AShipPawn::ModifyEngineImpluse);
+	PlayerInputComponent->BindAxis("Break", this, &AShipPawn::ModifyEngineImpluse);
 
 
 }

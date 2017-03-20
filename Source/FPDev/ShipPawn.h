@@ -46,10 +46,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Controls")
 		float EngineImpulse;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Controls")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controls")
 		float MaxEngineImpulse;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Controls")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controls")
 		float MinEngineImpulse;
 
 	/**
