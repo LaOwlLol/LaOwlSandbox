@@ -1,5 +1,5 @@
 #FPDev
-First Person Shooter Development for Unreal Engine 4.
+Sandbox for Unreal Engine 4.
 
 See the Wiki for more information!
 
