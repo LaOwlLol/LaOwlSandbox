@@ -41,7 +41,16 @@ public:
 		float BaseLookUpRate;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+		float CruiseImpulse;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls")
 		float BaseImpulseRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+		float BaseImpulseDecayRate;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+		float BaseBreakDecayRate;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Controls")
 		float EngineImpulse;

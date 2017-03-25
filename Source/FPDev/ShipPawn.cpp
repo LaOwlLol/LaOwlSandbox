@@ -15,9 +15,16 @@ AShipPawn::AShipPawn()  {
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
-	BaseImpulseRate = 100.0f;
-	MaxEngineImpulse = 2000.f;
-	MinEngineImpulse = 100.f;
+	
+	BaseImpulseRate = 500.0f;
+
+	BaseImpulseDecayRate = 250.0f;
+	BaseBreakDecayRate = 400.0f;
+	
+	MaxEngineImpulse = 4000.f;
+	MinEngineImpulse = 200.f;
+	
+	CruiseImpulse = 500.f;
 
 	Health = 100.0f;
 
@@ -44,23 +51,38 @@ void AShipPawn::BeginPlay() {
 	WeaponFunction = NewObject<UWeaponMechanic>();
 
 	TimeSinceFire = 0.0f;
-
 	FireQueue.Init(true, 0);
 	TimeSinceBulletSpawn = 0.0f;
-
-	EngineImpulse = MinEngineImpulse;
-
 	TriggerHeld = false;
+
+	EngineImpulse = CruiseImpulse;
+
 }
 
 void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
+	if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse)) {
+		EngineImpulse = CruiseImpulse;
+	}
+	else {
+		if (EngineImpulse > CruiseImpulse) {
+			EngineImpulse -= BaseImpulseDecayRate * DeltaTime;
+		}
+		else {
+			EngineImpulse += BaseBreakDecayRate * DeltaTime;
+		}
+		
+	}
+
+	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
+	AddActorWorldOffset(WorldMove, false);
 
 	// Move plan forwards (with sweep so we stop when we collide with things)
-	AddActorLocalOffset(LocalMove, true);
+	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
+	//AddActorLocalOffset(LocalMove, true);
+
 
 	FireWeapon(DeltaTime);
 
@@ -94,9 +116,10 @@ void AShipPawn::PitchAtRate(float Rate)
 
 void AShipPawn::ModifyEngineImpluse(float Rate)
 {
-
-	EngineImpulse += Rate * BaseImpulseRate * GetWorld()->GetDeltaSeconds();
-	FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
+	if (!FMath::IsNearlyZero(Rate)) {
+		EngineImpulse += Rate * BaseImpulseRate * GetWorld()->GetDeltaSeconds();
+		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
+	}
 
 }
 

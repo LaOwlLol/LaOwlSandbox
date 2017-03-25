@@ -8,15 +8,6 @@ APlayerShip::APlayerShip()  {
 
 	SetupPawnView();
 
-	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
-	BaseImpulseRate = 100.0f;
-	MaxEngineImpulse = 2000.f;
-	MinEngineImpulse = 100.f;
-
-	Health = 100.0f;
-
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
