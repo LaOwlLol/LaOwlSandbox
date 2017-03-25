@@ -35,6 +35,9 @@ protected:
 	//initialize the pawn's mesh and other viewable components
 	virtual void SetupPawnView() override;
 
+	//Return the mesh component(s) used for this pawn.
+	virtual UStaticMeshComponent* GetPawnUsedView() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* BoomCamera;
 

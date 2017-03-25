@@ -8,7 +8,7 @@
 #include "ShipPawn.h"
 
 
-AShipPawn::AShipPawn() {
+AShipPawn::AShipPawn()  {
 
 	SetupPawnView();
 
@@ -18,14 +18,19 @@ AShipPawn::AShipPawn() {
 	BaseImpulseRate = 100.0f;
 	MaxEngineImpulse = 2000.f;
 	MinEngineImpulse = 100.f;
+
+	Health = 100.0f;
+
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
 	
 }
 
 void AShipPawn::SetupPawnView()
 {
 	MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Muzzle"));
-	MuzzleLocation->SetupAttachment(RootComponent);
-	MuzzleLocation->SetRelativeLocation(FVector(10.f, 0.f, 0.f));
+	MuzzleLocation->SetupAttachment(GetPawnUsedView());
+	MuzzleLocation->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 }
 
 UStaticMeshComponent* AShipPawn::GetPawnUsedView()

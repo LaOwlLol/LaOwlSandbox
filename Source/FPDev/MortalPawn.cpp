@@ -8,12 +8,14 @@
 // Sets default values
 AMortalPawn::AMortalPawn() : Super()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+
+	SetupPawnView();
 
 	Health = 100.0f;
 
-	SetupPawnView();
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
 }
 
 void AMortalPawn::SetupPawnView()
