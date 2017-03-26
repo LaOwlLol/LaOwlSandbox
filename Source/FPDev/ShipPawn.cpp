@@ -15,6 +15,7 @@ AShipPawn::AShipPawn()  {
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+	BaseRollRate = 20.f;
 	
 	BaseImpulseRate = 500.0f;
 
@@ -59,10 +60,8 @@ void AShipPawn::BeginPlay() {
 
 }
 
-void AShipPawn::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
+void AShipPawn::OnEngineImpluse(float DeltaTime) {
 	if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse)) {
 		EngineImpulse = CruiseImpulse;
 	}
@@ -73,7 +72,7 @@ void AShipPawn::Tick(float DeltaTime)
 		else {
 			EngineImpulse += BaseBreakDecayRate * DeltaTime;
 		}
-		
+
 	}
 
 	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
@@ -82,7 +81,14 @@ void AShipPawn::Tick(float DeltaTime)
 	// Move plan forwards (with sweep so we stop when we collide with things)
 	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
 	//AddActorLocalOffset(LocalMove, true);
+}
 
+void AShipPawn::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+	OnEngineImpluse(DeltaTime);
 
 	FireWeapon(DeltaTime);
 
@@ -111,7 +117,21 @@ void AShipPawn::TurnAtRate(float Rate)
 void AShipPawn::PitchAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
+	Rate = Rate * 2;
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AShipPawn::RollAtRate(float Rate)
+{
+	AddControllerRollInput(Rate * BaseRollRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AShipPawn::RollLeft(float Rate) {
+	RollAtRate(-Rate);
+}
+
+void AShipPawn::RollRight(float Rate) {
+	RollAtRate(Rate);
 }
 
 void AShipPawn::ModifyEngineImpluse(float Rate)

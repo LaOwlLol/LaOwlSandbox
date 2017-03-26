@@ -33,32 +33,46 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
-	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+	UPROPERTY(EditDefaultsOnly, Category = "Controller")
 		float BaseTurnRate;
 
+	/** Base roll rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY(EditDefaultsOnly, Category = "Controller")
+		float BaseRollRate;
+
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
-	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+	UPROPERTY(EditDefaultsOnly, Category = "Controller")
 		float BaseLookUpRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+		bool HoverAllowed;
+
+	//The ships base line Movement Scaler.  When Hover is not allowed ship trend toward's thier CruiseImpluse Scaler.
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float CruiseImpulse;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+	//Base Impluse Modification Scalar. 
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float BaseImpulseRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+	//Decay to Thrust base Scalar.
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float BaseImpulseDecayRate;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Controls")
+	//Decay to Break base Scalar.
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float BaseBreakDecayRate;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Controls")
+	//Current Engine Impluse Scalar.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Impluse Engine")
 		float EngineImpulse;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controls")
+	//Max Engine Impluse Scalar.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impluse Engine")
 		float MaxEngineImpulse;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Controls")
+	//Min Engine Impluse Scalar.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impluse Engine")
 		float MinEngineImpulse;
 
 	/**
@@ -72,6 +86,12 @@ public:
 	* @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	*/
 	void PitchAtRate(float Rate);
+
+	void RollLeft(float Rate);
+
+	void RollRight(float Rate);
+
+	void RollAtRate(float Rate);
 
 	void ModifyEngineImpluse(float Rate);
 
@@ -131,6 +151,8 @@ protected:
 
 	//initialize the pawn's mesh and other viewable components
 	virtual void SetupPawnView() override;
+
+	void OnEngineImpluse(float DeltaTime);
 
 	//Return the mesh component(s) used for this pawn.
 	virtual UStaticMeshComponent* GetPawnUsedView() override;

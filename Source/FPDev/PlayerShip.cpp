@@ -54,8 +54,8 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent * PlayerInputCompone
 	PlayerInputComponent->BindAxis("Impulse", this, &AShipPawn::ModifyEngineImpluse);
 	PlayerInputComponent->BindAxis("Thruster", this, &AShipPawn::ModifyEngineImpluse);
 	PlayerInputComponent->BindAxis("Break", this, &AShipPawn::ModifyEngineImpluse);
-
-
+	PlayerInputComponent->BindAxis("RollRight", this, &AShipPawn::RollRight);
+	PlayerInputComponent->BindAxis("RollLeft", this, &AShipPawn::RollLeft);
 }
 
 void APlayerShip::BeginPlay()
