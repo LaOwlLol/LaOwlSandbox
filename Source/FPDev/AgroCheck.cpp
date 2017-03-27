@@ -35,7 +35,7 @@ void UAgroCheck::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, 
 	FHitResult HitOut(ForceInit);
 
 	//draw some helpful debugs...
-	DrawDebugSphere(ThisAICharacter->GetWorld(), ThisAICharacter->GetActorLocation(), 1500, 12, FColor::Red, false, 4.0f);
+	//DrawDebugSphere(ThisAICharacter->GetWorld(), ThisAICharacter->GetActorLocation(), 1500, 12, FColor::Red, false, 4.0f);
 
 	//sweep test
 	bool bResult = ThisAICharacter->GetWorld()->SweepSingleByObjectType(HitOut, 

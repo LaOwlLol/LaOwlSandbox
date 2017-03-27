@@ -180,14 +180,15 @@ void AShipPawn::FireWeapon(float DeltaTime)
 			if (World != NULL)
 			{
 
-				//todo get sound and animation
-				/*if (WeaponComponent != NULL) {
+				
 				// try and play the sound if specified
-				if (WeaponComponent->HasActivationSound())
+				if (WeaponActivationSound)
 				{
-				UGameplayStatics::PlaySoundAtLocation(this, WeaponComponent->GetActivationSound(), GetActorLocation());
+					UGameplayStatics::PlaySoundAtLocation(this, WeaponActivationSound, GetActorLocation());
 				}
-
+				/*
+				//todo get sound and animation
+				if (WeaponComponent != NULL) {
 				// try and play a firing animation if specified
 				if (WeaponComponent->HasActivationAnimation())
 				{

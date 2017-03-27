@@ -154,6 +154,9 @@ protected:
 
 	void OnEngineImpluse(float DeltaTime);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
+	class USoundBase* WeaponActivationSound;
+
 	//Return the mesh component(s) used for this pawn.
 	virtual UStaticMeshComponent* GetPawnUsedView() override;
 
