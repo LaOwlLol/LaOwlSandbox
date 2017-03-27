@@ -4,6 +4,7 @@
 #include "FPDevGameMode.h"
 #include "FPDevHUD.h"
 #include "PlayerShip.h"
+#include "ShipController.h"
 
 AFPDevGameMode::AFPDevGameMode()
 	: Super()
@@ -12,6 +13,8 @@ AFPDevGameMode::AFPDevGameMode()
 	//static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPersonCPP/Blueprints/TestPlayerShip"));
 	DefaultPawnClass = APlayerShip::StaticClass();
 	
+	//setup player controller as ship controller.
+	PlayerControllerClass = AShipController::StaticClass();
 
 	// use our custom HUD class
 	HUDClass = AFPDevHUD::StaticClass();

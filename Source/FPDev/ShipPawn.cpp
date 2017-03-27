@@ -117,7 +117,6 @@ void AShipPawn::TurnAtRate(float Rate)
 void AShipPawn::PitchAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	Rate = Rate * 2;
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
