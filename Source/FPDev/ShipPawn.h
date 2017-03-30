@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Controller")
 		float BaseLookUpRate;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Controller")
+		float FlightControlFactor;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		bool HoverAllowed;
 
@@ -52,7 +55,7 @@ public:
 		float CruiseImpulse;
 
 	//Base Impluse Modification Scalar. 
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	//UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float BaseImpulseRate;
 
 	//Decay to Thrust base Scalar.

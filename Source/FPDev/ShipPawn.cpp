@@ -13,19 +13,18 @@ AShipPawn::AShipPawn()  {
 	SetupPawnView();
 
 	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
-	BaseRollRate = 20.f;
+	BaseTurnRate = 20.f;
+	BaseLookUpRate = 20.f;
+	BaseRollRate = 45.f;
+	FlightControlFactor = 2;
 	
-	BaseImpulseRate = 500.0f;
-
-	BaseImpulseDecayRate = 250.0f;
-	BaseBreakDecayRate = 400.0f;
+	BaseImpulseRate = 1000.0f;
+	BaseImpulseDecayRate = 500.0f;
+	BaseBreakDecayRate = 500.0f;
 	
-	MaxEngineImpulse = 4000.f;
-	MinEngineImpulse = 200.f;
-	
-	CruiseImpulse = 500.f;
+	CruiseImpulse = 600.f;
+	MaxEngineImpulse = 1500.f;
+	MinEngineImpulse = 400.f;
 
 	Health = 100.0f;
 
@@ -78,7 +77,7 @@ void AShipPawn::OnEngineImpluse(float DeltaTime) {
 	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
 	AddActorWorldOffset(WorldMove, false);
 
-	// Move plan forwards (with sweep so we stop when we collide with things)
+	// Move plane forwards (with sweep so we stop when we collide with things)
 	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
 	//AddActorLocalOffset(LocalMove, true);
 }
@@ -111,13 +110,13 @@ void AShipPawn::OnFire()
 void AShipPawn::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	AddControllerYawInput(Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AShipPawn::PitchAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	AddControllerPitchInput(-Rate * (MinEngineImpulse/(FlightControlFactor*EngineImpulse)) * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AShipPawn::RollAtRate(float Rate)
