@@ -131,7 +131,7 @@ void AShipPawn::PitchAtRate(float Rate)
 	//	return;
 	//}
 	// calculate delta for this frame from the rate information
-	float PitchMod = -Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
+	float PitchMod = Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
 	AddControllerPitchInput(PitchMod);
 	/*
 	auto PitchRot = FRotator(PitchMod, 0, 0);
