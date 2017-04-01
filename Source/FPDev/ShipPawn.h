@@ -22,6 +22,8 @@ class FPDEV_API AShipPawn : public AMortalPawn
 	//Spwan bullets for the round.
 	void FireWeapon(float DeltaTime);
 	
+	class AShipController* ShipController;
+
 public:
 
 	AShipPawn();

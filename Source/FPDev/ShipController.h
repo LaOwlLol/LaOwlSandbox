@@ -13,7 +13,16 @@ class FPDEV_API AShipController : public APlayerController
 {
 	GENERATED_BODY()
 
+		AActor* OwnedPawn;
 public:
 	AShipController();
+	
+	void AddPitchInput(float Rate) override;
+	void AddYawInput(float Rate) override;
+	void AddRollInput(float Rate) override;
+
+protected:
+
+	
 	
 };

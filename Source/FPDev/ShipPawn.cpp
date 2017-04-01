@@ -5,6 +5,7 @@
 #include "Animation/AnimInstance.h"
 #include "WeaponMechanic.h"
 #include "FPDevProjectile.h"
+#include "ShipController.h"
 #include "ShipPawn.h"
 
 
@@ -14,7 +15,7 @@ AShipPawn::AShipPawn()  {
 
 	// set our turn rates for input
 	BaseTurnRate = 20.f;
-	BaseLookUpRate = 20.f;
+	BaseLookUpRate = 45.f;
 	BaseRollRate = 45.f;
 	FlightControlFactor = 2;
 	
@@ -47,7 +48,7 @@ UStaticMeshComponent* AShipPawn::GetPawnUsedView()
 
 void AShipPawn::BeginPlay() {
 	Super::BeginPlay();
-
+	ShipController = Cast<AShipController>(GetController());
 	WeaponFunction = NewObject<UWeaponMechanic>();
 
 	TimeSinceFire = 0.0f;
@@ -110,18 +111,50 @@ void AShipPawn::OnFire()
 void AShipPawn::TurnAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	//AddControllerYawInput(Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+
+	
+	float YawMod = Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseTurnRate * GetWorld()->GetDeltaSeconds();
+	AddControllerYawInput(YawMod);
+	/*
+	auto YawRot = FRotator(0, YawMod, 0);
+	auto Transform = GetActorTransform();
+	Transform.ConcatenateRotation(YawRot.Quaternion());
+	Transform.NormalizeRotation();
+	SetActorTransform(Transform);
+	*/
 }
 
 void AShipPawn::PitchAtRate(float Rate)
 {
+	//if (!ShipController) {
+	//	return;
+	//}
 	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(-Rate * (MinEngineImpulse/(FlightControlFactor*EngineImpulse)) * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	float PitchMod = -Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
+	AddControllerPitchInput(PitchMod);
+	/*
+	auto PitchRot = FRotator(PitchMod, 0, 0);
+	auto Transform = GetActorTransform();
+	Transform.ConcatenateRotation(PitchRot.Quaternion());
+	Transform.NormalizeRotation();
+	SetActorTransform(Transform);
+	*/
+	
 }
 
 void AShipPawn::RollAtRate(float Rate)
 {
-	AddControllerRollInput(Rate * BaseRollRate * GetWorld()->GetDeltaSeconds());
+	
+	float RollMod = Rate * BaseRollRate * GetWorld()->GetDeltaSeconds();
+	AddControllerRollInput(RollMod);
+	/*
+	auto RollRot = FRotator(0, 0, Rate);
+	auto Transform = GetActorTransform();
+	Transform.ConcatenateRotation(RollRot.Quaternion());
+	Transform.NormalizeRotation();
+	SetActorTransform(Transform);
+	*/
 }
 
 void AShipPawn::RollLeft(float Rate) {

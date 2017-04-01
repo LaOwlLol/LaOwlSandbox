@@ -47,9 +47,9 @@ void APlayerShip::SetupPlayerInputComponent(UInputComponent * PlayerInputCompone
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AShipPawn::ToggleTrigger);
 
 	//Bind input axis to functions.
-	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Turn", this, &AShipPawn::TurnAtRate);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AShipPawn::TurnAtRate);
-	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &AShipPawn::PitchAtRate);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AShipPawn::PitchAtRate);
 	PlayerInputComponent->BindAxis("Impulse", this, &AShipPawn::ModifyEngineImpluse);
 	PlayerInputComponent->BindAxis("Thruster", this, &AShipPawn::ModifyEngineImpluse);
