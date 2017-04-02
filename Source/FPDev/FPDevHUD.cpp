@@ -2,6 +2,7 @@
 
 #include "FPDev.h"
 #include "FPDevHUD.h"
+#include "HUDElement.h"
 #include "PlayerShip.h"
 #include "WeaponMechanic.h"
 #include "Engine/Canvas.h"
@@ -28,6 +29,12 @@ void AFPDevHUD::DrawHUD()
 
 	DrawWeaponMechanicPattern(Center.X, Center.Y-(Canvas->ClipY * 0.125f), FColor::Red);
 
+
+	for (UHUDElement* It : HUDElements)
+	{
+		It->Draw();
+	}
+
 	// offset by half the texture's dimensions so that the center of the texture aligns with the center of the Canvas
 	//const FVector2D CrosshairDrawPosition( (Center.X),
 										   //(Center.Y + 20.0f));
@@ -38,26 +45,11 @@ void AFPDevHUD::DrawHUD()
 	//Canvas->DrawItem( TileItem );
 }
 
-void AFPDevHUD::DrawText(UFont * TheFont, const FString & TheStr, const float & X, const float & Y, const FLinearColor & TheColor, const float & TheScale, bool DrawOutline, const FLinearColor OutlineColor)
+void AFPDevHUD::DrawText(const FString & TheStr, const FLinearColor & TheColor, const float & X, const float & Y)
 {
+	if (!Canvas) return;
 
-	if (!Canvas) {
-		return;
-	}
-
-	//Text and Font
-	FCanvasTextItem NewText(FVector2D(X, Y), FText::FromString(TheStr), TheFont, TheColor);
-
-	//Text Scale
-	NewText.Scale.Set(TheScale, TheScale);
-
-	//Outline gets its alpha from the main color
-	NewText.bOutlined = true;
-	NewText.OutlineColor = OutlineColor;
-	NewText.OutlineColor.A = TheColor.A * 2;
-
-	//Draw
-	Canvas->DrawItem(NewText);
+	Super::DrawText(TheStr, TheColor, Canvas->ClipX * X, Canvas->ClipY * Y);
 }
 
 void AFPDevHUD::VDrawTile(UTexture2D * tex, float x, float y, const FColor & TheColor)
@@ -68,7 +60,7 @@ void AFPDevHUD::VDrawTile(UTexture2D * tex, float x, float y, const FColor & The
 
 	Canvas->SetDrawColor(TheColor);
 
-	FCanvasTileItem TileItem( FVector2D(x,y), tex->Resource, TheColor);
+	FCanvasTileItem TileItem( FVector2D(Canvas->ClipX * x, Canvas->ClipY * y), tex->Resource, TheColor);
 	TileItem.BlendMode = SE_BLEND_Translucent;
 
 	//Draw
@@ -97,12 +89,21 @@ void AFPDevHUD::DrawWeaponMechanicPattern(float OrigX, float OrigY, const FColor
 	}
 }
 
+bool AFPDevHUD::AddHUDElement(UClass* HUDElementType)
+{
+	UHUDElement* newObject = NewObject<UHUDElement>(this, HUDElementType);
+	if (!newObject) { return false; }
+	newObject->RegisterOwner(this);
+	HUDElements.Add(newObject);
+
+	return true;
+}
+
 void AFPDevHUD::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
 	PlayerController = GetOwningPlayerController();
-
 	PlayerShip = Cast<APlayerShip>(GetOwningPawn());
 
 }

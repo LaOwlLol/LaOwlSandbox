@@ -17,5 +17,7 @@ AFPDevGameMode::AFPDevGameMode()
 	PlayerControllerClass = AShipController::StaticClass();
 
 	// use our custom HUD class
-	HUDClass = AFPDevHUD::StaticClass();
+	static ConstructorHelpers::FClassFinder<AFPDevHUD> HUDClassFinder(TEXT("/Game/FirstPersonCPP/Blueprints/MyFPDevHUD"));
+	HUDClass = HUDClassFinder.Class;
+	//HUDClass = AFPDevHUD::StaticClass();
 }

@@ -52,6 +52,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		bool HoverAllowed;
 
+	//Is the engine currently under Impulse acceleration/decceleration. 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Impluse Engine")
+		bool Accelerating;
+
 	//The ships base line Movement Scaler.  When Hover is not allowed ship trend toward's thier CruiseImpluse Scaler.
 	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float CruiseImpulse;

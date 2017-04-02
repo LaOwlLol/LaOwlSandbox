@@ -60,29 +60,6 @@ void AShipPawn::BeginPlay() {
 
 }
 
-
-void AShipPawn::OnEngineImpluse(float DeltaTime) {
-	if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse)) {
-		EngineImpulse = CruiseImpulse;
-	}
-	else {
-		if (EngineImpulse > CruiseImpulse) {
-			EngineImpulse -= BaseImpulseDecayRate * DeltaTime;
-		}
-		else {
-			EngineImpulse += BaseBreakDecayRate * DeltaTime;
-		}
-
-	}
-
-	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
-	AddActorWorldOffset(WorldMove, false);
-
-	// Move plane forwards (with sweep so we stop when we collide with things)
-	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
-	//AddActorLocalOffset(LocalMove, true);
-}
-
 void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -167,11 +144,38 @@ void AShipPawn::RollRight(float Rate) {
 
 void AShipPawn::ModifyEngineImpluse(float Rate)
 {
-	if (!FMath::IsNearlyZero(Rate)) {
+	 if (!FMath::IsNearlyZero(Rate)) {
 		EngineImpulse += Rate * BaseImpulseRate * GetWorld()->GetDeltaSeconds();
 		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
+		Accelerating = true;
+	}
+	 else {
+		 if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse, 1.0f)) {
+			 Accelerating = false;
+		 }
+	 }
+}
+
+void AShipPawn::OnEngineImpluse(float DeltaTime) {
+
+	if (Accelerating) {
+		if (EngineImpulse > CruiseImpulse) {
+			EngineImpulse -= BaseImpulseDecayRate * DeltaTime;
+		}
+		else {
+			EngineImpulse += BaseBreakDecayRate * DeltaTime;
+		}
+	}
+	else {
+		EngineImpulse = CruiseImpulse;
 	}
 
+	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
+	AddActorWorldOffset(WorldMove, false);
+
+	// Move plane forwards (with sweep so we stop when we collide with things)
+	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
+	//AddActorLocalOffset(LocalMove, true);
 }
 
 bool AShipPawn::ActivateWeapon()
