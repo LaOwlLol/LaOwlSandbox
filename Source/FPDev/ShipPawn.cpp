@@ -19,7 +19,8 @@ AShipPawn::AShipPawn()  {
 	BaseRollRate = 45.f;
 	FlightControlFactor = 2;
 	
-	BaseImpulseRate = 1000.0f;
+	BaseAccelerationRate = 1000.0f;
+	BaseBreakRate = 800.00f;
 	BaseImpulseDecayRate = 500.0f;
 	BaseBreakDecayRate = 500.0f;
 	
@@ -144,30 +145,26 @@ void AShipPawn::RollRight(float Rate) {
 
 void AShipPawn::ModifyEngineImpluse(float Rate)
 {
-	 if (!FMath::IsNearlyZero(Rate)) {
-		EngineImpulse += Rate * BaseImpulseRate * GetWorld()->GetDeltaSeconds();
-		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
-		Accelerating = true;
+	if (!FMath::IsNearlyZero(Rate)) {
+		ImpulseQueue.Add(Rate);
 	}
-	 else {
-		 if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse, 1.0f)) {
-			 Accelerating = false;
-		 }
-	 }
 }
 
 void AShipPawn::OnEngineImpluse(float DeltaTime) {
 
-	if (Accelerating) {
-		if (EngineImpulse > CruiseImpulse) {
-			EngineImpulse -= BaseImpulseDecayRate * DeltaTime;
+	if (ImpulseQueue.Num() != 0) {
+		if (ImpulseQueue[0] > 0.0) {
+			EngineImpulse += ImpulseQueue[0] * BaseAccelerationRate * DeltaTime;
 		}
 		else {
-			EngineImpulse += BaseBreakDecayRate * DeltaTime;
+			EngineImpulse += ImpulseQueue[0] * BaseBreakRate * DeltaTime;
 		}
+
+		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
+		ImpulseQueue.RemoveAt(0);
 	}
 	else {
-		EngineImpulse = CruiseImpulse;
+		OnEngineCruise(DeltaTime);
 	}
 
 	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
@@ -176,6 +173,29 @@ void AShipPawn::OnEngineImpluse(float DeltaTime) {
 	// Move plane forwards (with sweep so we stop when we collide with things)
 	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
 	//AddActorLocalOffset(LocalMove, true);
+}
+
+void AShipPawn::OnEngineCruise(float DeltaTime) {
+	if (EngineImpulse > CruiseImpulse) {
+		if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse,(BaseImpulseDecayRate/10.0f))) {
+			EngineImpulse = CruiseImpulse;
+		}
+		else {
+			EngineImpulse -= BaseImpulseDecayRate * DeltaTime;
+		}
+
+		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
+	}
+	else if (EngineImpulse < CruiseImpulse) {
+		if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse, (BaseBreakDecayRate/10.0f))) {
+			EngineImpulse = CruiseImpulse;
+		}
+		else {
+			EngineImpulse += BaseBreakDecayRate * DeltaTime;
+		}
+
+		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
+	}
 }
 
 bool AShipPawn::ActivateWeapon()

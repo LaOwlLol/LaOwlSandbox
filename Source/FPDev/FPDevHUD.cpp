@@ -25,9 +25,9 @@ void AFPDevHUD::DrawHUD()
 	// Draw very simple crosshair
 
 	// find center of the Canvas
-	const FVector2D Center(Canvas->ClipX * 0.5f, Canvas->ClipY * 0.5f);
+	const FVector2D Center(0.5f, 0.5f);
 
-	DrawWeaponMechanicPattern(Center.X, Center.Y-(Canvas->ClipY * 0.125f), FColor::Red);
+	//DrawWeaponMechanicPattern(Center.X - 0.005, Center.Y-(Center.Y/4.f), FColor::Red);
 
 
 	for (UHUDElement* It : HUDElements)
@@ -36,9 +36,9 @@ void AFPDevHUD::DrawHUD()
 	}
 
 	// offset by half the texture's dimensions so that the center of the texture aligns with the center of the Canvas
-	//const FVector2D CrosshairDrawPosition( (Center.X),
-										   //(Center.Y + 20.0f));
 
+
+	VDrawTile(PatternBulletTexture, Center.X, Center.Y - (Center.Y / 4.f), FColor::Red);
 	// draw the crosshair
 	//FCanvasTileItem TileItem( CrosshairDrawPosition, CrosshairTex->Resource, FLinearColor::White);
 	//TileItem.BlendMode = SE_BLEND_Translucent;
@@ -60,7 +60,10 @@ void AFPDevHUD::VDrawTile(UTexture2D * tex, float x, float y, const FColor & The
 
 	Canvas->SetDrawColor(TheColor);
 
-	FCanvasTileItem TileItem( FVector2D(Canvas->ClipX * x, Canvas->ClipY * y), tex->Resource, TheColor);
+	float w = tex->GetSurfaceWidth() / 2.f; 
+	float h = tex->GetSurfaceHeight() / 2.f;
+
+	FCanvasTileItem TileItem( FVector2D((Canvas->ClipX * x) - w, (Canvas->ClipY * y) - h), tex->Resource, TheColor);
 	TileItem.BlendMode = SE_BLEND_Translucent;
 
 	//Draw
@@ -70,21 +73,22 @@ void AFPDevHUD::VDrawTile(UTexture2D * tex, float x, float y, const FColor & The
 void AFPDevHUD::DrawWeaponMechanicPattern(float OrigX, float OrigY, const FColor & TheColor)
 {
 	UWeaponMechanic* WeaponFunction = PlayerShip->WeaponFunction;
-	float HUD_Scale = (Canvas->ClipX / Canvas->ClipY) * 5.0f;
+	float HUD_Scale = (Canvas->ClipX / Canvas->ClipY) * 0.01f;
 	float offSetW = (float(WeaponFunction->SpreadWidth) / 2.0f);
 	float offSetH = (float(WeaponFunction->GetSpreadHeight()) / 2.0f);
-	float Dim = WeaponFunction ->GetSpreadCellDim();
+	float Dim = WeaponFunction->GetSpreadCellDim()  ;
+	float EvenOffW = ((WeaponFunction->SpreadWidth % 2 == 0) ? Dim / 2.0f : 0.0);
+	float EvenOffH = ((WeaponFunction->GetSpreadHeight() % 2 == 0) ? Dim / 2.0f : 0.0);
 	int32 i = 0;
 	//for each element or cell in the SpreadPattern array.
 	for (auto& cell : WeaponFunction->SpreadPattern) {
 		if (cell) {
 			//transform Pattern index to x and y coordinates
-			float x = ((i%WeaponFunction->SpreadWidth)  -  offSetW) * (Dim * HUD_Scale) ;
-			float y = ((i / WeaponFunction->SpreadWidth) -  offSetH) * (Dim * HUD_Scale) ;
+			float x = ((i%WeaponFunction->SpreadWidth) - offSetW) * Dim;// +EvenOffW;
+			float y = ((i / WeaponFunction->SpreadWidth) - offSetH) * Dim;// +EvenOffH;
 
-			VDrawTile(PatternBulletTexture, OrigX+x, OrigY+y, TheColor);
+			VDrawTile(PatternBulletTexture, OrigX + (x *HUD_Scale), OrigY + (y*HUD_Scale), TheColor);
 		}
-
 		++i;
 	}
 }

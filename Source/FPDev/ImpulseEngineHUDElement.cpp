@@ -22,9 +22,9 @@ void UImpulseEngineHUDElement::Draw_Implementation() const {
 		return;
 	}
 
-	OwnerHUD->DrawText( FString("Accelerating: ").Append(
-		FString(PlayerShip->Accelerating ? TEXT("true") : TEXT("false")) ),
-		ColorProperties, XOrigin, YOrigin-0.02f);
+	//OwnerHUD->DrawText( FString("Accelerating: ").Append(
+		//FString::SanitizeFloat(PlayerShip->Acceleration)),
+		//ColorProperties, XOrigin, YOrigin-0.02f);
 	OwnerHUD->DrawText( FString("EngineImpluse: ").Append(
 		FString::SanitizeFloat(PlayerShip->EngineImpulse)),
 		ColorProperties, XOrigin, YOrigin);

@@ -16,6 +16,9 @@ class FPDEV_API AShipPawn : public AMortalPawn
 	//List of rounds queued to fire.
 	TArray<bool> FireQueue;
 
+	//list of impulse queued for the ship's "ImpulseEngine".
+	TArray<float> ImpulseQueue;
+
 	//Whether the character is holding the trigger down or not.
 	bool TriggerHeld;
 
@@ -53,16 +56,26 @@ public:
 		bool HoverAllowed;
 
 	//Is the engine currently under Impulse acceleration/decceleration. 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Impluse Engine")
-		bool Accelerating;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Impluse Engine")
+		//float Acceleration;
 
 	//The ships base line Movement Scaler.  When Hover is not allowed ship trend toward's thier CruiseImpluse Scaler.
 	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
 		float CruiseImpulse;
 
-	//Base Impluse Modification Scalar. 
-	//UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
-		float BaseImpulseRate;
+	//Impluse Increase Modification Scalar.  
+	//This is the base scalar to (InputRate *  BaseAccelerationRate  * DeltaTime) formula
+	//InputRate is the GamePad or Keyboard input.
+	//DeltaTime is the input EventPolling rate, typically much less that .01 seconds.
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+		float BaseAccelerationRate;
+
+	//Impluse decrease Modification Scalar.  
+	//This is the base scalar to (InputRate *  BaseDecelerationRate  * DeltaTime) formula
+	//InputRate is the GamePad or Keyboard input.
+	//DeltaTime is the input EventPolling rate, typically much less that .01 seconds.
+	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+		float BaseBreakRate;
 
 	//Decay to Thrust base Scalar.
 	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
@@ -162,6 +175,8 @@ protected:
 	virtual void SetupPawnView() override;
 
 	void OnEngineImpluse(float DeltaTime);
+
+	void OnEngineCruise(float DeltaTime);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Gameplay)
 	class USoundBase* WeaponActivationSound;
