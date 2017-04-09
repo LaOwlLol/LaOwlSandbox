@@ -1,9 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+Attribution-NonCommercial-ShareAlike 4.0 International
+An EscapeVelocity Production (Nate Gillard).
+*/
 
 #include "FPDev.h"
 #include "Runtime/Engine/Classes/Kismet/KismetMathLibrary.h"
 #include "Animation/AnimInstance.h"
 #include "WeaponMechanic.h"
+#include "ImpulseEngineComponent.h"
 #include "FPDevProjectile.h"
 #include "ShipController.h"
 #include "ShipPawn.h"
@@ -12,27 +17,26 @@
 AShipPawn::AShipPawn()  {
 
 	SetupPawnView();
+	SetupImpulseEngine();
 
 	// set our turn rates for input
 	BaseTurnRate = 20.f;
 	BaseLookUpRate = 45.f;
 	BaseRollRate = 45.f;
 	FlightControlFactor = 2;
-	
-	BaseAccelerationRate = 1000.0f;
-	BaseBreakRate = 800.00f;
-	BaseImpulseDecayRate = 500.0f;
-	BaseBreakDecayRate = 500.0f;
-	
-	CruiseImpulse = 600.f;
-	MaxEngineImpulse = 1500.f;
-	MinEngineImpulse = 400.f;
 
 	Health = 100.0f;
 
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+}
+
+void AShipPawn::SetupImpulseEngine() {
+	ImpulseEngine = CreateDefaultSubobject<UImpulseEngineComponent>(TEXT("Engine"));
+	ImpulseEngine->SetupAttachment(GetPawnUsedView());
+	ImpulseEngine->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+
 }
 
 void AShipPawn::SetupPawnView()
@@ -57,8 +61,6 @@ void AShipPawn::BeginPlay() {
 	TimeSinceBulletSpawn = 0.0f;
 	TriggerHeld = false;
 
-	EngineImpulse = CruiseImpulse;
-
 }
 
 void AShipPawn::Tick(float DeltaTime)
@@ -66,7 +68,14 @@ void AShipPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	OnEngineImpluse(DeltaTime);
+	ImpulseEngine->OnEngineImpluse(DeltaTime);
+
+	const FVector WorldMove = ImpulseEngine->GetEngineImpulse() * DeltaTime * GetActorForwardVector();
+	AddActorWorldOffset(WorldMove, false);
+
+	// Move plane forwards (with sweep so we stop when we collide with things)
+	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
+	//AddActorLocalOffset(LocalMove, true);
 
 	FireWeapon(DeltaTime);
 
@@ -92,7 +101,7 @@ void AShipPawn::TurnAtRate(float Rate)
 	//AddControllerYawInput(Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 
 	
-	float YawMod = Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseTurnRate * GetWorld()->GetDeltaSeconds();
+	float YawMod = Rate * (ImpulseEngine->GetMinEngineImpulse() / (FlightControlFactor* ImpulseEngine->GetEngineImpulse())) * BaseTurnRate * GetWorld()->GetDeltaSeconds();
 	AddControllerYawInput(YawMod);
 	/*
 	auto YawRot = FRotator(0, YawMod, 0);
@@ -109,7 +118,7 @@ void AShipPawn::PitchAtRate(float Rate)
 	//	return;
 	//}
 	// calculate delta for this frame from the rate information
-	float PitchMod = Rate * (MinEngineImpulse / (FlightControlFactor*EngineImpulse)) * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
+	float PitchMod = Rate * (ImpulseEngine->GetMinEngineImpulse() / (FlightControlFactor * ImpulseEngine->GetEngineImpulse())) * BaseLookUpRate * GetWorld()->GetDeltaSeconds();
 	AddControllerPitchInput(PitchMod);
 	/*
 	auto PitchRot = FRotator(PitchMod, 0, 0);
@@ -146,57 +155,10 @@ void AShipPawn::RollRight(float Rate) {
 void AShipPawn::ModifyEngineImpluse(float Rate)
 {
 	if (!FMath::IsNearlyZero(Rate)) {
-		ImpulseQueue.Add(Rate);
+		ImpulseEngine->AddImpulse(Rate);
 	}
 }
 
-void AShipPawn::OnEngineImpluse(float DeltaTime) {
-
-	if (ImpulseQueue.Num() != 0) {
-		if (ImpulseQueue[0] > 0.0) {
-			EngineImpulse += ImpulseQueue[0] * BaseAccelerationRate * DeltaTime;
-		}
-		else {
-			EngineImpulse += ImpulseQueue[0] * BaseBreakRate * DeltaTime;
-		}
-
-		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
-		ImpulseQueue.RemoveAt(0);
-	}
-	else {
-		OnEngineCruise(DeltaTime);
-	}
-
-	const FVector WorldMove = EngineImpulse * DeltaTime * GetActorForwardVector();
-	AddActorWorldOffset(WorldMove, false);
-
-	// Move plane forwards (with sweep so we stop when we collide with things)
-	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
-	//AddActorLocalOffset(LocalMove, true);
-}
-
-void AShipPawn::OnEngineCruise(float DeltaTime) {
-	if (EngineImpulse > CruiseImpulse) {
-		if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse,(BaseImpulseDecayRate/10.0f))) {
-			EngineImpulse = CruiseImpulse;
-		}
-		else {
-			EngineImpulse -= BaseImpulseDecayRate * DeltaTime;
-		}
-
-		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
-	}
-	else if (EngineImpulse < CruiseImpulse) {
-		if (FMath::IsNearlyEqual(EngineImpulse, CruiseImpulse, (BaseBreakDecayRate/10.0f))) {
-			EngineImpulse = CruiseImpulse;
-		}
-		else {
-			EngineImpulse += BaseBreakDecayRate * DeltaTime;
-		}
-
-		EngineImpulse = FMath::Clamp(EngineImpulse, MinEngineImpulse, MaxEngineImpulse);
-	}
-}
 
 bool AShipPawn::ActivateWeapon()
 {
@@ -269,7 +231,7 @@ void AShipPawn::FireWeapon(float DeltaTime)
 				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
 				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
 				FVector Dist = WeaponFunction->SpreadDepth * Forward;
-				FVector inheritedVelocity = Forward * EngineImpulse;
+				FVector inheritedVelocity = Forward * ImpulseEngine->GetEngineImpulse();
 				int32 i = 0;
 				//for each element or cell in the SpreadPattern array.
 				for (auto& cell : WeaponFunction->SpreadPattern) {

@@ -1,8 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+Attribution-NonCommercial-ShareAlike 4.0 International
+An EscapeVelocity Production (Nate Gillard).
+*/
 
 #include "FPDev.h"
 #include "FPDevHUD.h"
 #include "PlayerShip.h"
+#include "ImpulseEngineComponent.h"
 #include "Math/Rotator.h"
 #include "ImpulseEngineHUDElement.h"
 
@@ -26,7 +31,7 @@ void UImpulseEngineHUDElement::Draw_Implementation() const {
 		//FString::SanitizeFloat(PlayerShip->Acceleration)),
 		//ColorProperties, XOrigin, YOrigin-0.02f);
 	OwnerHUD->DrawText( FString("EngineImpluse: ").Append(
-		FString::SanitizeFloat(PlayerShip->EngineImpulse)),
+		FString::SanitizeFloat(PlayerShip->ImpulseEngine->GetEngineImpulse())),
 		ColorProperties, XOrigin, YOrigin);
 	OwnerHUD->DrawText(FString("Pitch: ").Append(
 		FString::SanitizeFloat(PlayerShip->GetActorRotation().Pitch)),
