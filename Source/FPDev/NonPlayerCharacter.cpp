@@ -62,7 +62,7 @@ bool ANonPlayerCharacter::AttachWeapon(UClass* ComponentClass)
 	WeaponComponent->bCastDynamicShadow = true;
 	WeaponComponent->CastShadow = true;
 
-	FP_MuzzleLocation = NewNamedObject<USceneComponent>(this, TEXT("MuzzleLocation"));
+	FP_MuzzleLocation = NewObject<USceneComponent>(this, TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->RegisterComponent();
 	FP_MuzzleLocation->AttachTo(WeaponComponent);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, 10.6f));

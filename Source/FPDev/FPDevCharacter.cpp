@@ -114,7 +114,7 @@ bool AFPDevCharacter::AttachWeapon(UClass* ComponentClass)
 	WeaponComponent->bCastDynamicShadow = false;
 	WeaponComponent->CastShadow = false;
 
-	FP_MuzzleLocation = NewNamedObject<USceneComponent>(this, TEXT("MuzzleLocation"));
+	FP_MuzzleLocation = NewObject<USceneComponent>(this, TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->RegisterComponent();
 	FP_MuzzleLocation->AttachTo(WeaponComponent);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));

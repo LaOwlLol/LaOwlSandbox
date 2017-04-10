@@ -25,86 +25,86 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Characteristics")
 		bool HoverAllowed;
 
 	//The ships base line Movement Scaler.  When Hover is not allowed ship trend toward's thier CruiseImpluse Scaler.
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Characteristics")
 		float CruiseImpulse;
 
 	//Impluse Increase Modification Scalar.  
 	//This is the base scalar to (InputRate *  BaseAccelerationRate  * DeltaTime) formula
 	//InputRate is the GamePad or Keyboard input.
 	//DeltaTime is the input EventPolling rate, typically much less that .01 seconds.
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Characteristics")
 		float BaseAccelerationRate;
 
 	//Impluse decrease Modification Scalar.  
 	//This is the base scalar to (InputRate *  BaseDecelerationRate  * DeltaTime) formula
 	//InputRate is the GamePad or Keyboard input.
 	//DeltaTime is the input EventPolling rate, typically much less that .01 seconds.
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Characteristics")
 		float BaseBreakRate;
 
 	//Decay to Thrust base Scalar.
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Characteristics")
 		float BaseImpulseDecayRate;
 
 	//Decay to Break base Scalar.
-	UPROPERTY(EditDefaultsOnly, Category = "Impluse Engine")
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Characteristics")
 		float BaseBreakDecayRate;
 
 	//Current Engine Impluse Scalar.
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Impluse Engine")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement Characteristics")
 		float EngineImpulse;
 
 	//Max Engine Impluse Scalar.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impluse Engine")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Characteristics")
 		float MaxEngineImpulse;
 
 	//Min Engine Impluse Scalar.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Impluse Engine")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement Characteristics")
 		float MinEngineImpulse;
 	
 public:
 
 	UImpulseEngineComponent();
 
-	void AddImpulse(float Rate);
+	void AddEngineImpulse(float Rate);
 
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		bool GetHoverAllowed() { return HoverAllowed; }
 
 	//The ships base line Movement Scaler.  When Hover is not allowed ship trend toward's thier CruiseImpluse Scaler.
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetCruiseImpulse() { return CruiseImpulse; }
 
 	//Impluse Increase Modification Scalar.  
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetBaseAccelerationRate() { return BaseAccelerationRate; }
 
 	//Impluse decrease Modification Scalar.  
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetBaseBreakRate() { return BaseBreakRate; }
 
 	//Decay to Thrust base Scalar.
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetBaseImpulseDecayRate() { return BaseImpulseDecayRate; }
 
 	//Decay to Break base Scalar.
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetBaseBreakDecayRate() { return BaseBreakDecayRate; }
 
 	//Current Engine Impluse Scalar.
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetEngineImpulse() { return EngineImpulse; }
 
 	//Max Engine Impluse Scalar.
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetMaxEngineImpulse() { return MaxEngineImpulse; }
 
 	//Min Engine Impluse Scalar.
-	UFUNCTION(BlueprintCallable, Category = "Impluse Engine")
+	UFUNCTION(BlueprintCallable, Category = "Movement Characteristics")
 		float GetMinEngineImpulse() { return MinEngineImpulse; }
 
 	//Tick Helper method for applying velocity.

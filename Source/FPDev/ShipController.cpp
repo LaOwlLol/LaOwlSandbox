@@ -8,7 +8,7 @@ An EscapeVelocity Production (Nate Gillard).
 #include "ShipController.h"
 
 AShipController::AShipController() : Super() {
-	OwnedPawn= GetControlledPawn();
+	OwnedPawn= GetPawn();
 }
 
 void AShipController::AddPitchInput(float Rate)

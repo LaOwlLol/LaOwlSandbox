@@ -92,7 +92,7 @@ public:
 	//The characters WeaponMechanic, used to specify "how the character uses" the current weapon.
 	//See WeaponMechanics for "Weapon Functionality".
 	//Get the character's WeaponFunction member and use "Weapon Modifier" functions to modify the active WeaponMechanic's "Weapon Functionality" properties. 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon Mechanic")
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon Mechanic")
 	class UWeaponMechanic* WeaponFunction;
 
 	//Use this function change the character's WeaponFunction to a new WeaponMechanic of your choice.
@@ -125,9 +125,29 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon Operation")
 		bool ActivateWeapon();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Impulse Engine")
+		TSubclassOf<class UImpulseEngineComponent> ImpulseEngineType;
+
 	//This ship ImpulseEngine 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Impulse Engine")
-	class UImpulseEngineComponent* ImpulseEngine;
+		class UImpulseEngineComponent* ImpulseEngine;
+
+	/*
+	//Use this function change the character's ImpulseEngine to a new ImpulseEngine of your choice.
+	//This method constructs a ImpulseEngine of your choice and makes it the acitive ImpulseEngine.
+	//@Params: NewEngineType - the ImpulseEngine subclass to change to.
+	//DO NOT: Pass this function a ImpulseEngine object.  
+	UFUNCTION(BlueprintCallable, Category = "Weapon Mechanic")
+		void ChangeImpulseEngineType(UClass* NewEngineType);
+	*/
+	/*
+	//Use this function change the character's ImpulseEngine to a ImpulseEngine object.
+	//This method sets the acitive ImpulseEngine to a ImpulseEngine object.
+	//@Params: NewImpulseEngine - the ImpulseEngine object to change to.
+	//DO NOT: Pass this function a ImpulseEngine type.  
+	UFUNCTION(BlueprintCallable, Category = "Weapon Mechanic")
+		void SetImpulseEngine(UImpulseEngineComponent* NewImpulseEngine);
+	*/
 
 protected:
 
@@ -148,5 +168,7 @@ protected:
 
 	//Return the mesh component(s) used for this pawn.
 	virtual UStaticMeshComponent* GetPawnUsedView() override;
+
+	virtual UClass* GetUsedEngineType();
 
 };

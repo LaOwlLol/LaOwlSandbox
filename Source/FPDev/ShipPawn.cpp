@@ -17,7 +17,7 @@ An EscapeVelocity Production (Nate Gillard).
 AShipPawn::AShipPawn()  {
 
 	SetupPawnView();
-	SetupImpulseEngine();
+	
 
 	// set our turn rates for input
 	BaseTurnRate = 20.f;
@@ -27,16 +27,26 @@ AShipPawn::AShipPawn()  {
 
 	Health = 100.0f;
 
+	ImpulseEngine = CreateDefaultSubobject<UImpulseEngineComponent>(TEXT("Engine"));
+	ImpulseEngine->SetupAttachment(GetPawnUsedView());
+
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 }
 
 void AShipPawn::SetupImpulseEngine() {
-	ImpulseEngine = CreateDefaultSubobject<UImpulseEngineComponent>(TEXT("Engine"));
+
+	if (ImpulseEngineType) {
+		ImpulseEngine = ConstructObject<UImpulseEngineComponent>(GetUsedEngineType(), GetTransientPackage(), TEXT("Engine"));
+	}
+	else {
+		ImpulseEngine = NewObject<UImpulseEngineComponent>(GetTransientPackage(), TEXT("Engine"));
+	}
+
 	ImpulseEngine->SetupAttachment(GetPawnUsedView());
 	ImpulseEngine->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-
+	
 }
 
 void AShipPawn::SetupPawnView()
@@ -51,8 +61,27 @@ UStaticMeshComponent* AShipPawn::GetPawnUsedView()
 	return Super::GetPawnUsedView();
 }
 
+UClass* AShipPawn::GetUsedEngineType() {
+	return ImpulseEngineType;
+}
+
+/*
+void AShipPawn::ChangeImpulseEngineType(UClass * NewEngineType)
+{
+	WeaponFunction = NewObject<UWeaponMechanic>(this, NewEngineType);
+}
+*/
+
+/*
+void AShipPawn::SetImpulseEngine(UImpulseEngineComponent * NewImpulseEngine)
+{
+}
+*/
+
 void AShipPawn::BeginPlay() {
 	Super::BeginPlay();
+
+	SetupImpulseEngine();
 	ShipController = Cast<AShipController>(GetController());
 	WeaponFunction = NewObject<UWeaponMechanic>();
 
@@ -67,15 +96,12 @@ void AShipPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (ImpulseEngine) {
+		ImpulseEngine->OnEngineImpluse(DeltaTime);
 
-	ImpulseEngine->OnEngineImpluse(DeltaTime);
-
-	const FVector WorldMove = ImpulseEngine->GetEngineImpulse() * DeltaTime * GetActorForwardVector();
-	AddActorWorldOffset(WorldMove, false);
-
-	// Move plane forwards (with sweep so we stop when we collide with things)
-	//const FVector LocalMove = FVector(EngineImpulse * DeltaTime, 0.f, 0.f);
-	//AddActorLocalOffset(LocalMove, true);
+		const FVector WorldMove = ImpulseEngine->GetEngineImpulse() * DeltaTime * GetActorForwardVector();
+		AddActorWorldOffset(WorldMove, false);
+	}
 
 	FireWeapon(DeltaTime);
 
@@ -155,7 +181,7 @@ void AShipPawn::RollRight(float Rate) {
 void AShipPawn::ModifyEngineImpluse(float Rate)
 {
 	if (!FMath::IsNearlyZero(Rate)) {
-		ImpulseEngine->AddImpulse(Rate);
+		ImpulseEngine->AddEngineImpulse(Rate);
 	}
 }
 

@@ -6,12 +6,13 @@ An EscapeVelocity Production (Nate Gillard).
 
 #include "FPDev.h"
 #include "PlayerShip.h"
+#include "ImpulseEngineComponent.h"
 
 
 APlayerShip::APlayerShip()  {
 
 	SetupPawnView();
-
+	
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
@@ -19,7 +20,8 @@ APlayerShip::APlayerShip()  {
 
 void APlayerShip::SetupPawnView()
 {
-	
+	//SetupImpulseEngine();
+
 	//construct camera compoenent.
 	BoomArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("BoomArm"));
 	BoomArm->SetupAttachment(GetPawnUsedView());
@@ -28,6 +30,11 @@ void APlayerShip::SetupPawnView()
 	BoomCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("BoomCamera"));
 	BoomCamera->SetupAttachment(BoomArm);
 
+}
+
+UClass * APlayerShip::GetUsedEngineType()
+{
+	return ImpulseEngineType;
 }
 
 UStaticMeshComponent* APlayerShip::GetPawnUsedView()

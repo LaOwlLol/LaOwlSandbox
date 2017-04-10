@@ -66,7 +66,7 @@ UImpulseEngineComponent::UImpulseEngineComponent()
 
 }
 
-void UImpulseEngineComponent::AddImpulse(float Rate)
+void UImpulseEngineComponent::AddEngineImpulse(float Rate)
 {
 	ImpulseQueue.Add(Rate);
 }

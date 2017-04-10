@@ -39,6 +39,8 @@ protected:
 	//initialize the pawn's mesh and other viewable components
 	virtual void SetupPawnView() override;
 
+	virtual UClass* GetUsedEngineType() override;
+
 	//Return the mesh component(s) used for this pawn.
 	virtual UStaticMeshComponent* GetPawnUsedView() override;
 
