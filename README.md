@@ -1,4 +1,4 @@
-#FPDev
+#LaOwlSandbox
 Sandbox for Unreal Engine 4.
 
 See the Wiki for more information!
@@ -7,38 +7,39 @@ See the Wiki for more information!
 
 ##Simple Setup
 
-###1. Create an Unreal Engine 4 Project:
+### 1. Create an Unreal Engine 4 Project:
 
-![create fpdev](https://cloud.githubusercontent.com/assets/1817852/22621947/1ee4f084-eaf5-11e6-9afe-c56f19a4bed4.png)
+![create laowlsandbox](https://cloud.githubusercontent.com/assets/1817852/25784857/c98c160c-3339-11e7-92e7-3ab5cf76f366.png)
 
-1. Select from C++ project templates "First Person"
-2. Create the template in a Folder separate from Git project location.
-3. Name the project "FPDev", otherwise C++ files with not compile.
+1. Select from C++ project tab "Basic Code"
+2. Create the project in a Folder separate from Git project location.
+3. Name the project "LaOwlSandbox", otherwise C++ files may not compile.
+    * You will also need to add some input bindings and modify some of the GameMode settings. [Read more here.](https://github.com/LaOwlLol/FPDev/wiki/UE4-Project-Settings-and-details.)
 
-###2. Clone the project from this site:
-
-![clone using desktop](https://cloud.githubusercontent.com/assets/1817852/22621948/2b5b6d52-eaf5-11e6-9262-0761dbbdccd0.png)
+### 2. Clone the project from this site:
 
 Verify the location where Git Desktop has cloned the project. You will need this folder for the next step.
 
-###3. Copy the files:
+### 3. Copy the files:
   
   Copy and paste files
-  From: "Your Git Projects"/FPDev/Source/FPDev/ 
-  To: "Your Unreal Projects"/FPDev/Source/FPDev/
+
+From: "Your Git Projects"/LaOwlSandbox/Source/LaOwlSandbox/ 
+
+To: "Your Unreal Projects"/LaOwlSandbox/Source/LaOwlSandbox/
 
   a. Copy all of them.
   
   b. Overwrite in destination if needed. 
 
-###4. Rebuild Solution:
+  c. Do the same for LaOwlSandbox/Content directories.  (You should already have starter content generated UE4 by including the starter content when creating the project.)
 
-![rebuild](https://cloud.githubusercontent.com/assets/1817852/22622065/2c54e650-eaf7-11e6-93a7-fb7c7f7d12c4.png)
+ 
+### 4. Rebuild Solution:
 
-1. With Visual Studio Open, Close the UE4 Editor. (File->Open Visual Studio before closing UE4)
-2. In Visual Studio select Build->Rebuild Solution.  (this may take some time, have a snack or chill)
-3.  When it finishes you can re-open EU4 and in the C++ folder in content browser you should see all the classes added from Git project.
-
+1. With Visual Studio Open, close the UE4 Editor. (File->Open Visual Studio before closing UE4)
+2. In Visual Studio select Build->Rebuild Solution.  (This may take some time, have a snack or chill)
+3.  When it finishes you can re-open UE4 and in the C++ folder in content browser you should see all the classes added from Git project.
 
 
 
