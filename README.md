@@ -1,11 +1,11 @@
-#LaOwlSandbox
+# LaOwlSandbox
 Sandbox for Unreal Engine 4.
 
 See the Wiki for more information!
 
 
 
-##Simple Setup
+## Simple Setup
 
 ### 1. Create an Unreal Engine 4 Project:
 
@@ -43,7 +43,7 @@ To: "Your Unreal Projects"/LaOwlSandbox/Source/LaOwlSandbox/
 
 
 
-##Simple Update:
+## Simple Update:
 
 ![sync](https://cloud.githubusercontent.com/assets/1817852/22622009/125f5498-eaf6-11e6-8f93-b8f5561ccbeb.png)
 
