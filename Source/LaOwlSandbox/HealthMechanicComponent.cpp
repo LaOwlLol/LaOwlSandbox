@@ -29,11 +29,11 @@ void UHealthMechanicComponent::BeginPlay()
 	
 }
 
-bool UHealthMechanicComponent::IsHealthDepleated_Implementation() const {
+bool UHealthMechanicComponent::IsHealthDepleted_Implementation() const {
 	return !(Health > 0.0f);
 }
 
-void UHealthMechanicComponent::HealthDepleated_Implementation() {
+void UHealthMechanicComponent::HealthDepleted_Implementation() {
 	GetOwner()->Destroy();
 }
 
@@ -48,8 +48,8 @@ void UHealthMechanicComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (IsHealthDepleated()) {
-		HealthDepleated();
+	if (IsHealthDepleted()) {
+		HealthDepleted();
 	}
 }
 

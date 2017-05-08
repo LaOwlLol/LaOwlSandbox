@@ -35,15 +35,15 @@ protected:
 	//Check if health is remaining
 	//Default: false if health > 0.0 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
-		bool IsHealthDepleated() const;
-	virtual bool IsHealthDepleated_Implementation() const;
+		bool IsHealthDepleted() const;
+	virtual bool IsHealthDepleted_Implementation() const;
 
 	//Event called when IsHealthDepleated is true.
 	//Default: destroy this character.
 	//Recommended to always end by destroy this character.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Health System")
-		void HealthDepleated();
-	virtual void HealthDepleated_Implementation();
+		void HealthDepleted();
+	virtual void HealthDepleted_Implementation();
 
 public:	
 	
