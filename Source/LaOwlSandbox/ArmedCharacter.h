@@ -80,6 +80,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual FVector GetMovementVelocity();
+
 	//Attach a WeaponEntityComponent of WeaponClass to
 	//Each derived class implements this method to attach weapon.
 	UFUNCTION(BlueprintCallable, Category = "Weapon")

@@ -63,6 +63,11 @@ void AArmedCharacter::Tick(float DeltaTime)
 	}
 }
 
+FVector AArmedCharacter::GetMovementVelocity()
+{
+	return GetVelocity();
+}
+
 bool AArmedCharacter::AttachWeapon(UClass * WeaponClass)
 {
 
@@ -156,12 +161,10 @@ void AArmedCharacter::FireWeapon(float DeltaTime)
 						}
 					}
 				}
-	
 
 				//Set Spawn Collision Handling Override
 				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
+				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 				float cellDim = WeaponMechanic->GetSpreadCellDim();
 				float offSetW = (float(WeaponMechanic->SpreadWidth) / 2.0f);
@@ -170,7 +173,7 @@ void AArmedCharacter::FireWeapon(float DeltaTime)
 				FVector Up = UKismetMathLibrary::GetUpVector(SpawnRotation);
 				FVector Right = UKismetMathLibrary::GetRightVector(SpawnRotation);
 				FVector Dist = WeaponMechanic->SpreadDepth * Forward;
-				//FVector inheritedVelocity = Forward * ImpulseEngine->GetEngineImpulse();
+				FVector inheritedVelocity = GetMovementVelocity();
 				int32 i = 0;
 				//for each element or cell in the SpreadPattern array.
 				for (auto& cell : WeaponMechanic->SpreadPattern) {
@@ -195,7 +198,7 @@ void AArmedCharacter::FireWeapon(float DeltaTime)
 							SpawnLocation,
 							p.ToOrientationRotator(), ActorSpawnParams);
 						if (projectile) {
-							//projectile->AddVelocity(inheritedVelocity);
+							projectile->AddVelocity(inheritedVelocity);
 						}
 						
 					}

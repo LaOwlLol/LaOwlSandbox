@@ -11,6 +11,11 @@ void AShipCharacter::BeginPlay()
 	SetupImpulseEngine();
 }
 
+FVector AShipCharacter::GetMovementVelocity()
+{
+	return GetControlRotation().Vector() * ImpulseEngineComponent->GetEngineImpulse();
+}
+
 void AShipCharacter::SetupImpulseEngine()
 {
 	//TODO this is gross see issue # on Github.

@@ -22,6 +22,7 @@ AProjectile::AProjectile() : BaseDamage(10.0f), ImpactVelocityTransferScale(1.0f
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = CollisionComp;
+	ProjectileMovement->MaxSpeed = 0.f;
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
